@@ -17,6 +17,10 @@ namespace Smoney.API.Client.Models.Users
         public List<BankAccountRef> BankAccounts { get; set; }
         public List<CardRef> CBCards { get; set; }
         public UserStatus? Status { get; set; }
-        public Account DefaultAccount { get { return SubAccounts != null ? SubAccounts.FirstOrDefault(x => x.IsDefault) : null; } }
+
+        public Account DefaultAccount
+        {
+            get { return SubAccounts != null ? SubAccounts.FirstOrDefault(x => x.IsDefault) : null; }
+        }
     }
 }

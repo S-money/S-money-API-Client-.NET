@@ -11,63 +11,56 @@ using Smoney.API.Client.Models.Users;
 namespace Smoney.API.Client
 {
     public partial class APIClient
-    {        
-        public Card GetCard(string appcardid, string userid = null)
-        {
-            var uri = userid == null ? BaseURL + "cards/" : string.Format(BaseURL + "users/{0}/cards/", userid);
+    {
+        private const string cards = "cards";
+        private const string cardsRegistration = "cards/registrations";
 
-            var response = this.GetAsync(uri + appcardid).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var card = response.Content.ReadAsAsync<Card>().Result;
-            return card;
+        public Card GetCard(string appcardid, string userId = null)
+        {
+            var uri = CreateUri(userId, cards);
+            return GetAsync<Card>(uri + appcardid);
         }
 
-        public CardRegistration GetRegistration(string appcardid, string userid = null)
+        [Obsolete("Use GetCardRegistration")]
+        public CardRegistration GetRegistration(string appcardid, string userId = null)
         {
-            var uri = userid == null ? BaseURL + "cards/registrations" : string.Format(BaseURL + "users/{0}/cards/registrations", userid);
-
-            var response = this.GetAsync(uri + appcardid).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var cardRegistration = response.Content.ReadAsAsync<CardRegistration>().Result;
-            return cardRegistration;
+            var uri = CreateUri(userId, cardsRegistration);
+            return GetAsync<CardRegistration>(uri + appcardid);
         }
 
-        public IEnumerable<Card> GetCards(string userid = null)
+        public IEnumerable<Card> GetCards(string userId = null)
         {
-            var uri = userid == null ? BaseURL + "cards" : string.Format(BaseURL + "users/{0}/cards", userid);
-
-            var response = this.GetAsync(uri).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var cards = response.Content.ReadAsAsync<IEnumerable<Card>>().Result;
-            return cards;
+            var uri = CreateUri(userId, cards);
+            return GetAsync<IEnumerable<Card>>(uri);
         }
 
-        public CardRegistration GetCardRegistration(string appcardid, string userid = null)
+        public CardRegistration GetCardRegistration(string appcardid, string userId = null)
         {
-            var uri = userid == null ? BaseURL + "cards/registrations/" + appcardid : string.Format(BaseURL + "users/{0}/cards/registrations/" + appcardid, userid);
+            var uri = CreateUri(userId, cardsRegistration);
+            return GetAsync<CardRegistration>(uri + appcardid);
+        }
 
-            var response = this.GetAsync(uri).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var cardRegistration = response.Content.ReadAsAsync<CardRegistration>().Result;
-            return cardRegistration;
+        public IEnumerable<CardRegistration> GetCardsRegistration(string userId = null)
+        {
+            var uri = CreateUri(userId, cardsRegistration);
+            return GetAsync<IEnumerable<CardRegistration>>(uri);
         }
 
         public CardRegistration PostCard(CardRegistration cardRegistration, string userId = null)
         {
-            var uri = userId == null ? BaseURL + "cards/registrations/" : string.Format(BaseURL + "users/{0}/cards/registrations/", userId);
-
-            var response = this.PostAsJsonAsync<CardRegistration>(uri, cardRegistration).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var card = response.Content.ReadAsAsync<CardRegistration>().Result;
-            return card;
+            var uri = CreateUri(userId, "");
+            return PostAsync(uri, cardRegistration);
         }
 
         public HttpResponseMessage DeleteCard(string appcardid, string userId = null)
         {
-            var uri = userId == null ? BaseURL + "cards/" + appcardid : string.Format(BaseURL + "users/{0}/cards/" + appcardid, userId);
+            var uri = CreateUri(userId, cards);
 
-            var response = this.DeleteAsync(uri).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
+            var response = this.DeleteAsync(uri + appcardid).Result;
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new APIException(response);
+            }
             return response;
         }
     }

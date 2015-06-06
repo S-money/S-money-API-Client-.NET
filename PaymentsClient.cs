@@ -12,34 +12,24 @@ namespace Smoney.API.Client
 {
     public partial class APIClient
     {
-        public Payment GetPayment(long id, string userid = null)
-        {
-            var uri = userid == null ? BaseURL + "payments/" : string.Format(BaseURL + "users/{0}/payments/", userid);
+        private const string payments = "payments";
 
-            var response = this.GetAsync(uri + id).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var payment = response.Content.ReadAsAsync<Payment>().Result;
-            return payment;
+        public Payment GetPayment(long id, string userId = null)
+        {
+            var uri = CreateUri(userId, payments);
+            return GetAsync<Payment>(uri + id);
         }
 
-        public IEnumerable<Payment> GetPayments(string userid = null)
+        public IEnumerable<Payment> GetPayments(string userId = null)
         {
-            var uri = userid == null ? BaseURL + "payments" : string.Format(BaseURL + "users/{0}/payments", userid);
-
-            var response = this.GetAsync(uri).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var payments = response.Content.ReadAsAsync<IEnumerable<Payment>>().Result;
-            return payments;
+            var uri = CreateUri(userId, payments);
+            return GetAsync<IEnumerable<Payment>>(uri);
         }
 
-        public Payment PostPayment(Payment payment, string userid = null)
+        public Payment PostPayment(Payment payment, string userId = null)
         {
-            var uri = userid == null ? BaseURL + "payments" : string.Format(BaseURL + "users/{0}/payments", userid);
-
-            var response = this.PostAsJsonAsync(uri, payment).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var createdpayment = response.Content.ReadAsAsync<Payment>().Result;
-            return createdpayment;
+            var uri = CreateUri(userId, payments);
+            return PostAsync(uri, payment);
         }
     }
 }

@@ -6,9 +6,7 @@ using Smoney.API.Client.Enumerations;
 
 namespace Smoney.API.Client.Models.Operations
 {
-    public interface IPaymentSchedule
-    {
-    }
+    public interface IPaymentSchedule { }
 
     public class AutomaticPaymentSchedule : IPaymentSchedule
     {
@@ -18,9 +16,7 @@ namespace Smoney.API.Client.Models.Operations
         public int Period { get; set; }
     }
 
-    public class DetailedPaymentSchedule : List<Schedule>, IPaymentSchedule
-    {
-    }
+    public class DetailedPaymentSchedule : List<Schedule>, IPaymentSchedule { }
 
     public class Schedule
     {

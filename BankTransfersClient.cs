@@ -1,54 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Configuration;
-using System.Web.Http;
-using Smoney.API.Client.Models;
 using Smoney.API.Client.Models.Operations;
 
 namespace Smoney.API.Client
 {
     public partial class APIClient
     {
-        public BankTransfer PostOneShotMoneyOut(BankTransfer moneyOut, string userIdentifier = null)
+        private const string moneyouts = "moneyouts";
+        private const string moneyoutsOneshot = moneyouts + "/oneshot";
+        private const string moneyoutsReccuring = moneyouts + "/recurring";
+
+        public BankTransfer PostRecurringMoneyOut(BankTransfer moneyOut, string userIdentifier = null)
         {
-            var uri = userIdentifier == null ? BaseURL + "moneyouts/oneshot" : string.Format(BaseURL + "users/{0}/moneyouts/oneshot", userIdentifier);
-            var response = this.PostAsJsonAsync(uri, moneyOut).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                var createdMoneyOut = response.Content.ReadAsAsync<BankTransfer>().Result;
-                return createdMoneyOut;
-            }
-            else
-                throw new APIException(response);
+            var uri = CreateUri(userIdentifier, moneyoutsReccuring);
+            return PostAsync(uri, moneyOut);
         }
 
-        public BankTransfer GetMoneyOut(long id, string userIdentifier = null)
+        public BankTransfer GetMoneyOut(long id, string userId = null)
         {
-            var uri = userIdentifier == null ? string.Format(BaseURL + "moneyouts/{0}", id) : string.Format(BaseURL + "users/{0}/moneyouts/{1}", userIdentifier, id);
-            var response = this.GetAsync(uri).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                var moneyOut = response.Content.ReadAsAsync<BankTransfer>().Result;
-                return moneyOut;
-            }
-            else
-                throw new APIException(response);
+            var uri = CreateUri(userId, moneyouts);
+            return GetAsync<BankTransfer>(uri + id);
         }
 
-        public IEnumerable<BankTransfer> GetMoneyOuts(string userIdentifier = null)
+        public IEnumerable<BankTransfer> GetMoneyOuts(string userId = null)
         {
-            var uri = userIdentifier == null ? BaseURL + "moneyouts" : string.Format(BaseURL + "users/{0}/moneyouts", userIdentifier);
-            var response = this.GetAsync(BaseURL + "moneyouts").Result;
-            if (response.IsSuccessStatusCode)
-            {
-                var moneyouts = response.Content.ReadAsAsync<IEnumerable<BankTransfer>>().Result;
-                return moneyouts;
-            }
-            else
-                throw new APIException(response);
+            var uri = CreateUri(userId, moneyouts);
+            return GetAsync<IEnumerable<BankTransfer>>(uri);
+        }
+
+        public BankTransfer PostOneShotMoneyOut(BankTransfer moneyOut, string userId = null)
+        {
+            var uri = CreateUri(userId, moneyoutsOneshot);
+            return PostAsync(uri, moneyOut);
         }
     }
 }

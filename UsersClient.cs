@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Net.Http;
-using System.Configuration;
-using System.Web.Http;
 using Smoney.API.Client.Enumerations;
-using Smoney.API.Client.Models;
 using Smoney.API.Client.Models.Users;
-using System.Web;
 
 namespace Smoney.API.Client
 {
     public partial class APIClient
     {
+        private const string users = "users";
+
         public User GetUser(long id)
         {
             return GetUser(id.ToString());
@@ -21,69 +19,61 @@ namespace Smoney.API.Client
 
         public User GetUser(string identifier)
         {
-            var response = this.GetAsync(string.Format(BaseURL + "users/{0}", identifier)).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var user = response.Content.ReadAsAsync<User>().Result;
-            return user;
+            var uri = CreateUri(identifier, string.Empty);
+            return GetAsync<User>(uri);
         }
 
-        public User GetUser()
+        public IEnumerable<User> GetUsers(int? pageNumber = null)
         {
-            var response = this.GetAsync(BaseURL + "users").Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var user = response.Content.ReadAsAsync<User>().Result;
-            return user;
+            var uri = CreateUri(string.Empty, users, pageNumber);
+            return GetAsync<IEnumerable<User>>(uri);
         }
 
-        public IEnumerable<User> GetUsers()
+        public int GetUsersCount()
         {
-            var response = this.GetAsync(BaseURL + "users").Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var users = response.Content.ReadAsAsync<IEnumerable<User>>().Result;
-            return users;
+            var uri = CreateUri(string.Empty, users);
+            return GetCount(uri);
         }
 
         public IEnumerable<User> SearchUser(string firstName = null, string lastName = null, string email = null)
         {
             string url = BaseURL + "users/search";
-            var parameters = new System.Collections.Specialized.NameValueCollection();
+            var parameters = new NameValueCollection();
             if (!String.IsNullOrWhiteSpace(firstName))
+            {
                 parameters.Add("firstname", firstName);
+            }
             if (!String.IsNullOrWhiteSpace(lastName))
+            {
                 parameters.Add("lastname", lastName);
+            }
             if (!String.IsNullOrWhiteSpace(email))
+            {
                 parameters.Add("email", email);
+            }
 
             url = url + "?" + string.Join("&", parameters.AllKeys.Select(x => x + "=" + parameters[x]));
 
             var response = this.GetAsync(url).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var users = response.Content.ReadAsAsync<IEnumerable<User>>().Result;
-            return users;
+            return HandleResult<IEnumerable<User>>(response);
         }
 
         public User PostUser(User user)
         {
-            var response = this.PostAsJsonAsync(BaseURL + "users", user).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var createdUser = response.Content.ReadAsAsync<User>().Result;
-            return createdUser;
+            var uri = CreateUri(string.Empty, users);
+            return PostAsync(uri, user);
         }
 
         public User PutUser(string identifier, User user)
         {
             var response = this.PutAsJsonAsync(string.Format(BaseURL + "users/{0}", identifier), user).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var createdUser = response.Content.ReadAsAsync<User>().Result;
-            return createdUser;
+            return HandleResult<User>(response);
         }
 
         public User PutUser(User user)
         {
             var response = this.PutAsJsonAsync(BaseURL + "users", user).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var createdUser = response.Content.ReadAsAsync<User>().Result;
-            return createdUser;
+            return HandleResult<User>(response);
         }
 
         public User CloseUser(string identifier)
@@ -91,9 +81,7 @@ namespace Smoney.API.Client
             var closeUser = new User { Status = UserStatus.Closed };
 
             var response = this.PutAsJsonAsync(string.Format(BaseURL + "users/{0}", identifier), closeUser).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var createdUser = response.Content.ReadAsAsync<User>().Result;
-            return createdUser;
+            return HandleResult<User>(response);
         }
 
         public User CloseUser()
@@ -101,9 +89,7 @@ namespace Smoney.API.Client
             var closeUser = new User { Status = UserStatus.Closed };
 
             var response = this.PutAsJsonAsync(BaseURL + "users", closeUser).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var createdUser = response.Content.ReadAsAsync<User>().Result;
-            return createdUser;
+            return HandleResult<User>(response);
         }
     }
 }

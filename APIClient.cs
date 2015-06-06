@@ -1,36 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Net;
 using System.Net.Http;
-using System.Configuration;
-using System.Web.Http;
-using log4net;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using NLog;
 
 namespace Smoney.API.Client
 {
     public partial class APIClient : HttpClient
     {
-        public string BaseURL { get { return BaseAddress.AbsolutePath + "/" ; } }
+        private readonly int allocationSize;
+        private const string page = "?page=";
 
-        private string MediaTypeVersion { get { return "application/vnd.s-money.v1+json"; } }
-
-        public APIClient(string baseAddress) : base()
+        public string BaseURL
         {
-            this.BaseAddress = new Uri(baseAddress);
-
-            this.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(MediaTypeVersion));
+            get { return BaseAddress.AbsolutePath + "/"; }
         }
-        
+
+        private string MediaTypeVersion
+        {
+            get { return "application/vnd.s-money.v1+json"; }
+        }
+
+        public APIClient(string baseAddress)
+        {
+            BaseAddress = new Uri(baseAddress);
+
+            allocationSize = BaseURL.Length + 1;
+            allocationSize += Guid.Empty.ToString().Length + 1;
+            allocationSize += users.Length + 1;
+            allocationSize += storedcardpayments.Length + 1;
+            allocationSize += page.Length + 1;
+
+            DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MediaTypeVersion));
+        }
+
         public void AddRequestHeader(string name, string value)
         {
-            this.RemoveRequestHeader(name);
-            this.DefaultRequestHeaders.Add(name, value);
+            RemoveRequestHeader(name);
+            DefaultRequestHeaders.Add(name, value);
         }
 
         public void RemoveRequestHeader(string name)
         {
-            this.DefaultRequestHeaders.Remove(name);
+            DefaultRequestHeaders.Remove(name);
         }
 
         public void ReplaceRequestHeader(string name, string value)
@@ -39,35 +56,104 @@ namespace Smoney.API.Client
             AddRequestHeader(name, value);
         }
 
-        public override System.Threading.Tasks.Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+        public override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+                                                            CancellationToken cancellationToken)
         {
-            LogManager.GetLogger("SmoneyAPIClient").DebugFormat("Calling API {0}", request.RequestUri);
+            LogManager.GetLogger("SmoneyAPIClient").Debug("Calling API {0}", request.RequestUri);
 
             if (request.Content != null && request.Content.Headers.ContentType != null
                 && request.Content.Headers.ContentType.MediaType != "text/html"
                 && request.Content.Headers.ContentType.MediaType != "application/x-www-form-urlencoded"
                 && request.Content.Headers.ContentType.MediaType != "multipart/form-data"
                 && request.Content.Headers.ContentType.MediaType != "application/vnd.s-money.v2+json")
+            {
                 request.Content.Headers.ContentType.MediaType = MediaTypeVersion;
+            }
             var response = base.SendAsync(request, cancellationToken);
 
             if (response.Result != null && response.Result.Content != null && response.Result.Content.Headers.ContentType != null)
+            {
                 response.Result.Content.Headers.ContentType.MediaType = "application/json";
+            }
 
             return response;
         }
 
-        public new System.Threading.Tasks.Task<HttpResponseMessage> GetAsync(string requestUri)
+        public new Task<HttpResponseMessage> GetAsync(string requestUri)
         {
-            LogManager.GetLogger("SmoneyAPIClient").DebugFormat("Calling API {0}", requestUri);
+            LogManager.GetLogger("SmoneyAPIClient").Debug("Calling API {0}", requestUri);
 
             var response = base.GetAsync(requestUri);
 
             if (response.Result != null && response.Result.Content != null && response.Result.Content.Headers != null
-                && response.Result.StatusCode != System.Net.HttpStatusCode.NoContent)
+                && response.Result.StatusCode != HttpStatusCode.NoContent)
+            {
                 response.Result.Content.Headers.ContentType.MediaType = "application/json";
+            }
 
             return response;
+        }
+
+        public T GetAsync<T>(string uri)
+        {
+            var response = GetAsync(uri).Result;
+            return HandleResult<T>(response);
+        }
+
+        private T PostAsync<T>(string uri, T item)
+        {
+            var response = this.PostAsJsonAsync(uri, item).Result;
+            return HandleResult<T>(response);
+        }
+
+        private static T HandleResult<T>(HttpResponseMessage response)
+        {
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new APIException(response);
+            }
+
+            var result = response.Content.ReadAsAsync<T>().Result;
+            return result;
+        }
+
+        private int GetCount(string uri)
+        {
+            var response = GetAsync(uri).Result;
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new APIException(response);
+            }
+
+            IEnumerable<string> items = response.Headers.GetValues("Total-count");
+            var first = items.First();
+            var result = int.Parse(first);
+            return result;
+        }
+
+        private string CreateUri(string userId, string path, int? pageNumber = null)
+        {
+            StringBuilder builder = new StringBuilder(BaseURL, allocationSize);
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                builder.Append(users).Append('/')
+                       .Append(userId).Append('/');
+            }
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                builder.Append(path).Append('/');
+            }
+
+            if (pageNumber.HasValue)
+            {
+                builder.Append(page).Append(pageNumber.Value);
+            }
+
+            var result = builder.ToString();
+            return result;
         }
     }
 }
