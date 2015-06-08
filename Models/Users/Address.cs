@@ -14,7 +14,7 @@ namespace Smoney.API.Client.Models.Users
         public string ZipCode { get; set; }
         public string City { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonConverter(typeof (StringEnumConverter))]
         public Country Country { get; set; }
     }
 }

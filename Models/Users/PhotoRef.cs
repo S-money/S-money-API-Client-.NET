@@ -7,6 +7,6 @@ namespace Smoney.API.Client.Models.Users
 {
     public class PhotoRef
     {
-        public string href { get; set; }
+        public string Href { get; set; }
     }
 }

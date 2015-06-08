@@ -6,34 +6,24 @@ namespace Smoney.API.Client
 {
     public partial class APIClient
     {
-        public StoredCardPayment PostStoredCardPayment(StoredCardPayment moneyIn, string userIdentifier = null)
-        {
-            var uri = userIdentifier == null ? BaseURL + "payins/storedcardpayments" : string.Format(BaseURL + "users/{0}/payins/storedcardpayments", userIdentifier);
+        private const string storedcardpayments = "payins/storedcardpayments";
 
-            var response = this.PostAsJsonAsync<StoredCardPayment>(uri, moneyIn).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var responseMoneyIn = response.Content.ReadAsAsync<StoredCardPayment>().Result;
-            return responseMoneyIn;
+        public StoredCardPayment PostStoredCardPayment(StoredCardPayment moneyIn, string userId = null)
+        {
+            var uri = CreateUri(userId, storedcardpayments);
+            return PostAsync(uri, moneyIn);
         }
 
-        public IEnumerable<StoredCardPayment> GetStoredCardPayments(string userIdentifier = null)
+        public IEnumerable<StoredCardPayment> GetStoredCardPayments(string userId = null)
         {
-            var uri = userIdentifier == null ? BaseURL + "payins/storedcardpayments" : string.Format(BaseURL + "users/{0}/payins/storedcardpayments", userIdentifier);
-
-            var response = this.GetAsync(uri).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var moneyIns = response.Content.ReadAsAsync<IEnumerable<StoredCardPayment>>().Result;
-            return moneyIns;
+            var uri = CreateUri(userId, storedcardpayments);
+            return GetAsync<IEnumerable<StoredCardPayment>>(uri);
         }
 
-        public StoredCardPayment GetStoredCardPayment(string orderid, string userIdentifier = null)
+        public StoredCardPayment GetStoredCardPayment(string orderId, string userId = null)
         {
-            var uri = userIdentifier == null ? BaseURL + string.Format("payins/storedcardpayments/{0}", orderid) : string.Format(BaseURL + "users/{0}/payins/storedcardpayments/{1}", userIdentifier, orderid);
-
-            var response = this.GetAsync(uri).Result;
-            if (!response.IsSuccessStatusCode) throw new APIException(response);
-            var moneyIn = response.Content.ReadAsAsync<StoredCardPayment>().Result;
-            return moneyIn;
+            var uri = CreateUri(userId, storedcardpayments);
+            return GetAsync<StoredCardPayment>(uri + orderId);
         }
     }
 }

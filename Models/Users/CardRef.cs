@@ -9,6 +9,6 @@ namespace Smoney.API.Client.Models.Users
     {
         public long? Id { get; set; }
         public string AppCardId { get; set; }
-        public string href { get; set; }
+        public string Href { get; set; }
     }
 }
