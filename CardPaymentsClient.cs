@@ -15,17 +15,25 @@ namespace Smoney.API.Client
     {
         private const string cardpayments = "payins/cardpayments";
 
-        public IEnumerable<CardPayment> GetCardPayments(string userIdentifier = null)
+        public IEnumerable<CardPayment> GetCardPayments(string userIdentifier = null, int? pageNumber = null)
         {
-            ReplaceRequestHeader("Accept", "application/vnd.s-money.v2+json");
+            UseV2();
+
+            var uri = CreateUri(userIdentifier, cardpayments, pageNumber);
+            return GetAsync<IEnumerable<CardPayment>>(uri);
+        }
+
+        public int GetCardPaymentsCount(string userIdentifier = null)
+        {
+            UseV2();
 
             var uri = CreateUri(userIdentifier, cardpayments);
-            return GetAsync<IEnumerable<CardPayment>>(uri);
+            return GetCount(uri);
         }
 
         public CardPayment GetCardPayment(string id, string userIdentifier = null)
         {
-            ReplaceRequestHeader("Accept", "application/vnd.s-money.v2+json");
+            UseV2();
 
             var uri = CreateUri(userIdentifier, cardpayments);
             return GetAsync<CardPayment>(uri + id);
@@ -33,7 +41,7 @@ namespace Smoney.API.Client
 
         public CardPaymentCreated PostCardPayment(CardPaymentRequest cardPayment, string userIdentifier = null)
         {
-            ReplaceRequestHeader("Accept", "application/vnd.s-money.v2+json");
+            UseV2();
 
             var uri = CreateUri(userIdentifier, cardpayments);
 

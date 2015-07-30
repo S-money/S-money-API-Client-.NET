@@ -26,6 +26,8 @@ namespace Smoney.API.Client
             get { return "application/vnd.s-money.v1+json"; }
         }
 
+        public int DefaultPageSize { get { return 50; } }
+
         public APIClient(string baseAddress)
         {
             BaseAddress = new Uri(baseAddress);
@@ -59,7 +61,7 @@ namespace Smoney.API.Client
         public override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
                                                             CancellationToken cancellationToken)
         {
-            LogManager.GetLogger("SmoneyAPIClient").Debug("Calling API {0}", request.RequestUri);
+            SmoneyLogger.Logger.Debug(string.Format("Calling API {0}", request.RequestUri));
 
             if (request.Content != null && request.Content.Headers.ContentType != null
                 && request.Content.Headers.ContentType.MediaType != "text/html"
@@ -81,7 +83,7 @@ namespace Smoney.API.Client
 
         public new Task<HttpResponseMessage> GetAsync(string requestUri)
         {
-            LogManager.GetLogger("SmoneyAPIClient").Debug("Calling API {0}", requestUri);
+            SmoneyLogger.Logger.Debug(string.Format("Calling API {0}", requestUri));
 
             var response = base.GetAsync(requestUri);
 
@@ -119,6 +121,7 @@ namespace Smoney.API.Client
 
         private int GetCount(string uri)
         {
+            uri += "?perpage=1";
             var response = GetAsync(uri).Result;
 
             if (!response.IsSuccessStatusCode)
@@ -149,11 +152,20 @@ namespace Smoney.API.Client
 
             if (pageNumber.HasValue)
             {
+                if (pageNumber.Value == 0)
+                {
+                    SmoneyLogger.Logger.Warn(string.Format("Start Page numbering is 1, not 0"));
+                }
                 builder.Append(page).Append(pageNumber.Value);
             }
 
             var result = builder.ToString();
             return result;
+        }
+
+        private void UseV2()
+        {
+            ReplaceRequestHeader("Accept", "application/vnd.s-money.v2+json");
         }
     }
 }

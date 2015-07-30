@@ -25,9 +25,9 @@ namespace Smoney.API.Client
             }
             else
             {
-                LogManager.GetLogger("SmoneyAPIClient")
-                          .Trace("Exception : code [{0}] Phrase=\"{1}\" Message=\"{2}\" Result = [{3}]", m.StatusCode, m.ReasonPhrase,
-                                 m.RequestMessage, result);
+                var message = string.Format("Exception : code [{0}] Phrase=\"{1}\" Message=\"{2}\" Result = [{3}]",
+                                            m.StatusCode, m.ReasonPhrase, m.RequestMessage, result);
+                SmoneyLogger.Logger.Trace(message);
                 throw new HttpException((int)m.StatusCode, m.ReasonPhrase);
             }
         }
