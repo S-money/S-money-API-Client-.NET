@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S-money.API.Client.Public", "S-money.API.Client.Public.csproj", "{2A306C57-E5DC-4111-AD08-B6A9E464E459}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S-money.API.Client.Public", "S-money.API.Client.Public\S-money.API.Client.Public.csproj", "{2A306C57-E5DC-4111-AD08-B6A9E464E459}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S-money.API.Client.Tests", "..\S-money.API.Client.Tests\S-money.API.Client.Tests.csproj", "{A76B7050-62FF-4E42-B248-9365CC4E86A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S-money.API.Client.Tests", "S-money.API.Client.Tests\S-money.API.Client.Tests.csproj", "{A76B7050-62FF-4E42-B248-9365CC4E86A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
