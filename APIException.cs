@@ -21,6 +21,7 @@ namespace Smoney.API.Client
 
             if (IsJson(result))
             {
+                SmoneyLogger.Logger.Trace(result);
                 SmoneyError = JsonConvert.DeserializeObject<Fault>(result);
             }
             else

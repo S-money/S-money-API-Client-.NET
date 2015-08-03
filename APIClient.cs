@@ -108,6 +108,28 @@ namespace Smoney.API.Client
             return HandleResult<T>(response);
         }
 
+        private TResponse PostAsync<TRequest, TResponse>(string uri, TRequest item)
+        {
+            var response = this.PostAsJsonAsync(uri, item).Result;
+            return HandleResult<TResponse>(response);
+        }
+
+
+        private T PutAsync<T>(string uri, T item)
+        {
+            var response = this.PutAsJsonAsync(uri, item).Result;
+            return HandleResult<T>(response);
+        }
+
+        private TResponse PutAsync<TRequest, TResponse>(string uri, TRequest item)
+        {
+            var response = this.PutAsJsonAsync(uri, item).Result;
+            return HandleResult<TResponse>(response);
+        }
+
+
+
+
         private static T HandleResult<T>(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)

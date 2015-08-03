@@ -44,17 +44,7 @@ namespace Smoney.API.Client
             UseV2();
 
             var uri = CreateUri(userIdentifier, cardpayments);
-
-            var req = new HttpRequestMessage(HttpMethod.Post, uri);
-            req.Content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(cardPayment));
-            req.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.s-money.v2+json");
-
-            var response = this.SendAsync(req, new CancellationToken()).Result;
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new APIException(response);
-            }
-            return response.Content.ReadAsAsync<CardPaymentCreated>().Result;
+            return PostAsync<CardPaymentRequest, CardPaymentCreated>(uri, cardPayment);
         }
     }
 }

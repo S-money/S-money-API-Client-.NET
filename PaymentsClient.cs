@@ -26,6 +26,13 @@ namespace Smoney.API.Client
             return GetAsync<IEnumerable<Payment>>(uri);
         }
 
+        // Not implemented
+        //public int GetPaymentsCount(string userId = null)
+        //{
+        //    var uri = CreateUri(userId, payments);
+        //    return GetCount(uri);
+        //}
+
         public Payment PostPayment(Payment payment, string userId = null)
         {
             var uri = CreateUri(userId, payments);

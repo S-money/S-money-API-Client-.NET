@@ -67,9 +67,13 @@
     <Compile Include="Enumerations\CardPaymentStatus.cs" />
     <Compile Include="Enumerations\Civility.cs" />
     <Compile Include="Enumerations\Country.cs" />
+    <Compile Include="Enumerations\ManadateStatus.cs" />
     <Compile Include="Enumerations\UserDemandStatus.cs" />
     <Compile Include="Enumerations\UserStatus.cs" />
     <Compile Include="ILogAdapter.cs" />
+    <Compile Include="Models\Operations\DirectDebit.cs" />
+    <Compile Include="Models\Operations\Mandate.cs" />
+    <Compile Include="Models\Operations\MandateRef.cs" />
     <Compile Include="Models\Operations\PaymentSchedule.cs" />
     <Compile Include="SmoneyLogger.cs" />
     <Compile Include="StoredBankTransfersClient.cs" />
