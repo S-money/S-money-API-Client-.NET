@@ -20,7 +20,7 @@ namespace Smoney.API.Client.Tests
                 var all = client.GetMandates(UserId).ToList();
                 Assert.IsNotNull(all);
                 Assert.Greater(all.Count, 0);
-                Assert.IsTrue(all.Any(e=> e.Id == result.Id));
+                Assert.IsTrue(all.Any(e => e.Id == result.Id));
             }
         }
 
@@ -53,7 +53,7 @@ namespace Smoney.API.Client.Tests
                 var all = client.GetDirectDebits(UserId).ToList();
                 Assert.IsNotNull(all);
                 Assert.Greater(all.Count, 0);
-                Assert.IsTrue(all.Any(e=> e.Id == retrieved.Id));
+                Assert.IsTrue(all.Any(e => e.Id == retrieved.Id));
             }
         }
 

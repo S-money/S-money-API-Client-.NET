@@ -9,7 +9,7 @@ using Smoney.API.Client.Models.Operations;
 namespace Smoney.API.Client.Tests
 {
     [TestFixture]
-    class CardPaymentTests : CommonTests
+    public class CardPaymentTests : CommonTests
     {
         [Test]
         public void InitiatePayment()
@@ -23,11 +23,11 @@ namespace Smoney.API.Client.Tests
         private void InitiatePayment(APIClient client)
         {
             var request = new CardPaymentRequest
-            {
-                Amount = 10000,
-                OrderId = "TEST" + TimedId,
-                IsMine = true
-            };
+                          {
+                              Amount = 10000,
+                              OrderId = "TEST" + TimedId,
+                              IsMine = true
+                          };
             request.UrlReturn = "http://example.com/dummy/Payment";
             request.Message = request.UrlReturn;
             var result = client.PostCardPayment(request, UserId);
@@ -63,7 +63,6 @@ namespace Smoney.API.Client.Tests
                 var item = payments[0];
                 var payment = client.GetCardPayment(item.Id.ToString(), UserId);
                 Assert.IsNotNull(payment);
-
             }
         }
 
