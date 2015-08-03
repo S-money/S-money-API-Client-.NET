@@ -56,7 +56,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\S-Money\S-money.API.Client.Public.csproj">
+    <ProjectReference Include="..\S-money.API.Client.Public\S-money.API.Client.Public.csproj">
       <Project>{2a306c57-e5dc-4111-ad08-b6a9e464e459}</Project>
       <Name>S-money.API.Client.Public</Name>
     </ProjectReference>
