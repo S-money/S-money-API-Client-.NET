@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Smoney.API.Client.Enumerations
 {
-    public enum CardPaymentStatus
+    public enum PaymentStatus
     {
         Pending = 0,
         Succeeded = 1,

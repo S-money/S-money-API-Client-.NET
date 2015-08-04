@@ -5,7 +5,7 @@ using Smoney.API.Client.Models.Users;
 
 namespace Smoney.API.Client.Models.Operations
 {
-    public class DirectDebit
+    public class MoneyInDirectDebit
     {
         public string OrderId { get; set; }
         public DateTime? PaymentDate { get; set; }
@@ -21,21 +21,21 @@ namespace Smoney.API.Client.Models.Operations
         
     }
 
-    public class DirectDebitRequest : DirectDebit
+    public class MoneyInDirectDebitRequest : MoneyInDirectDebit
     {
         
     }
-    public class DirectDebitResponse : DirectDebit
+    public class MoneyInDirectDebitResponse : MoneyInDirectDebit
     {
         public long Id { get; set; }
 
         public DateTime CreationDate { get; set; }
-        public CardPaymentStatus Status { get; set; }
+        public PaymentStatus Status { get; set; }
         public List<Schedule> Schedules { get; set; }
     }
 
     public class CancelRequest
     {
-        public CardPaymentStatus Status { get; set; }
+        public PaymentStatus Status { get; set; }
     }
 }

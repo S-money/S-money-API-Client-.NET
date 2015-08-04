@@ -64,17 +64,20 @@
     <Compile Include="BankAccountsClient.cs" />
     <Compile Include="CardsClient.cs" />
     <Compile Include="ConsoleLogger.cs" />
-    <Compile Include="Enumerations\CardPaymentStatus.cs" />
+    <Compile Include="Enumerations\PaymentStatus.cs" />
     <Compile Include="Enumerations\Civility.cs" />
     <Compile Include="Enumerations\Country.cs" />
     <Compile Include="Enumerations\ManadateStatus.cs" />
     <Compile Include="Enumerations\UserDemandStatus.cs" />
     <Compile Include="Enumerations\UserStatus.cs" />
     <Compile Include="ILogAdapter.cs" />
-    <Compile Include="Models\Operations\DirectDebit.cs" />
+    <Compile Include="Models\Operations\BankTransferReferenceRequest.cs" />
+    <Compile Include="Models\Operations\MoneyInDirectDebit.cs" />
     <Compile Include="Models\Operations\Mandate.cs" />
     <Compile Include="Models\Operations\MandateRef.cs" />
+    <Compile Include="Models\Operations\MoneyInBankTransfer.cs" />
     <Compile Include="Models\Operations\PaymentSchedule.cs" />
+    <Compile Include="Enumerations\CallbackType.cs" />
     <Compile Include="SmoneyLogger.cs" />
     <Compile Include="StoredBankTransfersClient.cs" />
     <Compile Include="Enumerations\ClientRole.cs" />
@@ -83,7 +86,7 @@
     <Compile Include="Models\Attachments\FileAttachmentRef.cs" />
     <Compile Include="Models\Operations\Fee.cs" />
     <Compile Include="Models\Operations\StoredCardPayment.cs" />
-    <Compile Include="Models\Operations\BankTransfer.cs" />
+    <Compile Include="Models\Operations\MoneyOut.cs" />
     <Compile Include="Models\Operations\CardPayment.cs" />
     <Compile Include="Models\Operations\Payment.cs" />
     <Compile Include="Models\Users\Account.cs" />
@@ -110,6 +113,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

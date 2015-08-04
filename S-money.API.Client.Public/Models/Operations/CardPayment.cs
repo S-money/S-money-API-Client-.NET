@@ -12,7 +12,7 @@ namespace Smoney.API.Client.Models.Operations
     {
         public long Id { get; set; }
         public long Amount { get; set; }
-        public CardPaymentStatus Status { get; set; }
+        public PaymentStatus Status { get; set; }
         public AccountRef Beneficiary { get; set; }
         public DateTime PaymentDate { get; set; }
         public string Message { get; set; }

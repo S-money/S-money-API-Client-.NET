@@ -75,7 +75,7 @@ namespace Smoney.API.Client.Tests
             {
                 var debit = CreateDirectDebit(client);
                 const int newAmount = 2 * PaymentClientTest.AMOUNT;
-                var update = new DirectDebitRequest { Amount = newAmount };
+                var update = new MoneyInDirectDebitRequest { Amount = newAmount };
                 var updated = client.UpdateDirectDebit(debit.Id, update, UserId);
                 Assert.IsNotNull(updated);
                 Assert.AreEqual(debit.Id, updated.Id);
@@ -89,17 +89,17 @@ namespace Smoney.API.Client.Tests
             using (var client = CreateClient())
             {
                 var debit = CreateDirectDebit(client);
-                DirectDebitResponse result = client.DeleteDirectDebit(debit.Id, UserId);
+                MoneyInDirectDebitResponse result = client.DeleteDirectDebit(debit.Id, UserId);
                 Assert.IsNotNull(result);
                 Assert.AreEqual(debit.Id, result.Id);
-                Assert.AreEqual(CardPaymentStatus.Canceled, result.Status);
+                Assert.AreEqual(PaymentStatus.Canceled, result.Status);
             }
         }
 
-        private DirectDebitResponse CreateDirectDebit(APIClient client)
+        private MoneyInDirectDebitResponse CreateDirectDebit(APIClient client)
         {
             var mandate = CreateMandate(client);
-            var directdebit = new DirectDebitRequest
+            var directdebit = new MoneyInDirectDebitRequest
                               {
                                   Mandate = new MandateRef { Id = mandate.Id },
                                   OrderId = "DirectDebit-" + TimedId,
@@ -111,7 +111,7 @@ namespace Smoney.API.Client.Tests
             var response = client.PostDirectDebit(directdebit, UserId);
 
             Assert.IsNotNull(response);
-            Assert.AreEqual(CardPaymentStatus.Pending, response.Status);
+            Assert.AreEqual(PaymentStatus.Pending, response.Status);
             return response;
         }
     }

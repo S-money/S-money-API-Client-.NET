@@ -35,6 +35,20 @@ namespace Smoney.API.Client
             return GetCount(uri);
         }
 
+        public List<User> GetAllUsers()
+        {
+            SmoneyLogger.Logger.Warn("");
+            var count = GetUsersCount();
+            List<User> results = new List<User>(count);
+            int currentPage = 1;
+            while (results.Count != count)
+            {
+                var items = GetUsers(currentPage++);
+                results.AddRange(items);
+            }
+            return results;
+        }
+
         public IEnumerable<User> SearchUser(string firstName = null, string lastName = null, string email = null)
         {
             string url = BaseURL + "users/search";

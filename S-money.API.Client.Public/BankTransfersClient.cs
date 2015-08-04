@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using Smoney.API.Client.Enumerations;
 using Smoney.API.Client.Models.Operations;
 
@@ -14,28 +12,30 @@ namespace Smoney.API.Client
         private const string moneyoutsReccuring = moneyouts + "/recurring";
         private const string payins = "payins";
         private const string directdebits = payins + "/directdebits";
+        private const string banktransfers = payins + "/banktransfers";
+        private const string banktransferreferences = banktransfers + "/references";
 
         #region MoneyOut
 
-        public BankTransfer PostRecurringMoneyOut(BankTransfer moneyOut, string userIdentifier = null)
+        public MoneyOut PostRecurringMoneyOut(MoneyOut moneyOut, string userIdentifier = null)
         {
             var uri = CreateUri(userIdentifier, moneyoutsReccuring);
             return PostAsync(uri, moneyOut);
         }
 
-        public BankTransfer GetMoneyOut(long id, string userId = null)
+        public MoneyOut GetMoneyOut(long id, string userId = null)
         {
             var uri = CreateUri(userId, moneyouts);
-            return GetAsync<BankTransfer>(uri + id);
+            return GetAsync<MoneyOut>(uri + id);
         }
 
-        public IEnumerable<BankTransfer> GetMoneyOuts(string userId = null)
+        public IEnumerable<MoneyOut> GetMoneyOuts(string userId = null)
         {
             var uri = CreateUri(userId, moneyouts);
-            return GetAsync<IEnumerable<BankTransfer>>(uri);
+            return GetAsync<IEnumerable<MoneyOut>>(uri);
         }
 
-        public BankTransfer PostOneShotMoneyOut(BankTransfer moneyOut, string userId = null)
+        public MoneyOut PostOneShotMoneyOut(MoneyOut moneyOut, string userId = null)
         {
             var uri = CreateUri(userId, moneyoutsOneshot);
             return PostAsync(uri, moneyOut);
@@ -43,7 +43,7 @@ namespace Smoney.API.Client
 
         #endregion
 
-        #region MoneyIn
+        #region MoneyIn DirectDebits
 
         public MandateResponse GetMandate(long id, string userId = null)
         {
@@ -63,38 +63,92 @@ namespace Smoney.API.Client
             return PostAsync<MandateRequest, MandateResponse>(uri, mandate);
         }
 
-        public DirectDebitResponse GetDirectDebit(long id, string userId = null)
+        public MoneyInDirectDebitResponse GetDirectDebit(long id, string userId = null)
         {
             var uri = CreateUri(userId, directdebits);
-            return GetAsync<DirectDebitResponse>(uri + id);
+            return GetAsync<MoneyInDirectDebitResponse>(uri + id);
         }
 
-        public IEnumerable<DirectDebitResponse> GetDirectDebits(string userId = null)
+        public IEnumerable<MoneyInDirectDebitResponse> GetDirectDebits(string userId = null)
         {
             var uri = CreateUri(userId, directdebits);
-            return GetAsync<IEnumerable<DirectDebitResponse>>(uri);
+            return GetAsync<IEnumerable<MoneyInDirectDebitResponse>>(uri);
         }
 
-        public DirectDebitResponse PostDirectDebit(DirectDebitRequest directdebit, string userId = null)
+        public MoneyInDirectDebitResponse PostDirectDebit(MoneyInDirectDebitRequest directdebit, string userId = null)
         {
             var uri = CreateUri(userId, directdebits);
-            return PostAsync<DirectDebitRequest, DirectDebitResponse>(uri, directdebit);
-        }
-        public DirectDebitResponse UpdateDirectDebit(long id, DirectDebitRequest update, string userId = null)
-        {
-            var uri = CreateUri(userId, directdebits);
-            return PutAsync<DirectDebitRequest, DirectDebitResponse>(uri + id, update);
+            return PostAsync<MoneyInDirectDebitRequest, MoneyInDirectDebitResponse>(uri, directdebit);
         }
 
-        public DirectDebitResponse DeleteDirectDebit(long id, string userId = null)
+        public MoneyInDirectDebitResponse UpdateDirectDebit(long id, MoneyInDirectDebitRequest update, string userId = null)
         {
             var uri = CreateUri(userId, directdebits);
-            var update = new CancelRequest { Status = CardPaymentStatus.Canceled };
-            return PutAsync<CancelRequest, DirectDebitResponse>(uri + id, update);
+            return PutAsync<MoneyInDirectDebitRequest, MoneyInDirectDebitResponse>(uri + id, update);
+        }
+
+        public MoneyInDirectDebitResponse DeleteDirectDebit(long id, string userId = null)
+        {
+            var uri = CreateUri(userId, directdebits);
+            var update = new CancelRequest { Status = PaymentStatus.Canceled };
+            return PutAsync<CancelRequest, MoneyInDirectDebitResponse>(uri + id, update);
         }
 
         #endregion
 
-       
+        #region MoneyIn Bank transfer
+
+        public BankTransferReferenceResponse PostBankTransferReference(string userId)
+        {
+            var request = new BankTransferReferenceRequest { IsMine = true };
+            return PostBankTransferReference(request, userId);
+        }
+
+        public BankTransferReferenceResponse PostBankTransferReference(BankTransferReferenceRequest request, string userId)
+        {
+            var uri = CreateUri(userId, banktransferreferences);
+            return PostAsync<BankTransferReferenceRequest, BankTransferReferenceResponse>(uri, request);
+        }
+
+
+        public BankTransferReferenceResponse GetBankTransfertReference(string reference, string userId)
+        {
+            var uri = CreateUri(userId, banktransferreferences);
+            return GetAsync<BankTransferReferenceResponse>(uri + reference);
+        }
+
+        public BankTransferReferenceResponse GetBankTransfertReference(long referenceId, string userId)
+        {
+            var uri = CreateUri(userId, banktransferreferences);
+            return GetAsync<BankTransferReferenceResponse>(uri + referenceId);
+        }
+
+        public IEnumerable<BankTransferReferenceResponse> GetBankTransfertReferences(string userId)
+        {
+            var uri = CreateUri(userId, banktransferreferences);
+            return GetAsync<IEnumerable<BankTransferReferenceResponse>>(uri);
+        }
+
+        public IEnumerable<MoneyInBankTransfer> GetBankTransfer(string reference, string userId)
+        {
+            var uri = CreateUri(userId, banktransfers);
+            uri += string.Format("?reference={0}", reference);
+            return GetAsync<IEnumerable<MoneyInBankTransfer>>(uri);
+        }
+
+
+        public MoneyInBankTransfer GetBankTransfer(long id, string userId)
+        {
+            var uri = CreateUri(userId, banktransfers);
+            return GetAsync<MoneyInBankTransfer>(uri + id);
+        }
+
+        public IEnumerable<MoneyInBankTransfer> GetBankTransfers(string userId)
+        {
+            var uri = CreateUri(userId, banktransfers);
+            return GetAsync<IEnumerable<MoneyInBankTransfer>>(uri);
+        }
+
+        #endregion
     }
 }

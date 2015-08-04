@@ -16,8 +16,9 @@ namespace Smoney.API.Client.Tests
         {
             using (var client = CreateClient())
             {
-                var users = client.GetUsers();
-                Assert.GreaterOrEqual(users.Count(), 0);
+                var count = client.GetUsersCount();
+                var users = client.GetAllUsers();
+                Assert.AreEqual(count, users.Count);
             }
         }
 

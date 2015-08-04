@@ -23,7 +23,7 @@ namespace Smoney.API.Client.Models.Operations
         public int SequenceNumber { get; set; }
         public long Amount { get; set; }
         public DateTime Date { get; set; }
-        public CardPaymentStatus Status { get; set; } // TODO : enum
+        public PaymentStatus Status { get; set; } // TODO : enum
         public long? Fee { get; set; }
         // TODO : REFUND public List<IRefund> Refunds { get; set; }
     }

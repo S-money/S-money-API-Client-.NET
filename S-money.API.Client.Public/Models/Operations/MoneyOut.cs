@@ -6,7 +6,7 @@ using Smoney.API.Client.Models.Users;
 
 namespace Smoney.API.Client.Models.Operations
 {
-    public class BankTransfer
+    public class MoneyOut
     {
         public long Id { get; set; }
         public AccountRef AccountId { get; set; }
