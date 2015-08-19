@@ -11,7 +11,7 @@ using NLog;
 
 namespace Smoney.API.Client
 {
-    public partial class APIClient : HttpClient
+    public partial class APIClient : HttpClient, ISmoneyApiClient
     {
         private readonly int allocationSize;
         private const string page = "?page=";

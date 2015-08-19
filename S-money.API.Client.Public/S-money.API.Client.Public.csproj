@@ -71,6 +71,7 @@
     <Compile Include="Enumerations\UserDemandStatus.cs" />
     <Compile Include="Enumerations\UserStatus.cs" />
     <Compile Include="ILogAdapter.cs" />
+    <Compile Include="ISmoneyAPIClient.cs" />
     <Compile Include="Models\Operations\BankTransferReferenceRequest.cs" />
     <Compile Include="Models\Operations\MoneyInDirectDebit.cs" />
     <Compile Include="Models\Operations\Mandate.cs" />
