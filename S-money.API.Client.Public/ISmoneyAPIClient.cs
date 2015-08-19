@@ -9,6 +9,10 @@ namespace Smoney.API.Client
 {
     public interface ISmoneyApiClient : IDisposable
     {
+        string BaseURL { get; }
+        Uri BaseAddress { get; }
+        int DefaultPageSize { get; }
+
         Card GetCard(string appcardid, string userId = null);
         CardRegistration GetRegistration(string appcardid, string userId = null);
         IEnumerable<Card> GetCards(string userId = null);
@@ -73,8 +77,5 @@ namespace Smoney.API.Client
         BankAccount PostBankAccount(BankAccount bankAccount, string userId = null);
         BankAccount PutBankAccount(BankAccount bankAccount, string userId = null);
         void DeleteBankAccount(long id, string userId = null);
-        string BaseURL { get; }
-        int DefaultPageSize { get; }
-        void Dispose();
     }
 }
