@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using Smoney.API.Client.Models.Attachments;
 using Smoney.API.Client.Models.Operations;
@@ -6,7 +7,7 @@ using Smoney.API.Client.Models.Users;
 
 namespace Smoney.API.Client
 {
-    public interface ISmoneyApiClient
+    public interface ISmoneyApiClient : IDisposable
     {
         Card GetCard(string appcardid, string userId = null);
         CardRegistration GetRegistration(string appcardid, string userId = null);
