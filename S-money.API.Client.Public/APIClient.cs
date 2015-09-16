@@ -69,7 +69,7 @@ namespace Smoney.API.Client
                 && request.Content.Headers.ContentType.MediaType != "multipart/form-data"
                 && request.Content.Headers.ContentType.MediaType != "application/vnd.s-money.v2+json")
             {
-                request.Content.Headers.ContentType.MediaType = MediaTypeVersion;
+                request.Content.Headers.ContentType.MediaType = DefaultRequestHeaders.Accept.ToString();
             }
             var response = base.SendAsync(request, cancellationToken);
 
