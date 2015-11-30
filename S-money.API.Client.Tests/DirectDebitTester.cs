@@ -114,5 +114,15 @@ namespace Smoney.API.Client.Tests
             Assert.AreEqual(PaymentStatus.Pending, response.Status);
             return response;
         }
+
+        [Test]
+        public void RealTest()
+        {
+            using (var client = CreateClient())
+            {
+                var debits = client.GetDirectDebits()    
+            }
+            
+        }
     }
 }
