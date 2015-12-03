@@ -21,6 +21,6 @@ namespace Smoney.API.Client.Models.Users
         public int? RiskControlResult { get; set; }
         public int? BankAuthResult { get; set; }
         public int? ThreedsResult { get; set; }
-        public bool WarrantyResult { get; set; }
+        public bool? WarrantyResult { get; set; }
     }
 }
