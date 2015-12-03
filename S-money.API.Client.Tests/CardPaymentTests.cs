@@ -16,15 +16,15 @@ namespace Smoney.API.Client.Tests
         {
             using (var client = CreateClient())
             {
-                InitiatePayment(client);
+                InitiatePayment(client, 50000);
             }
         }
 
-        private void InitiatePayment(APIClient client)
+        private void InitiatePayment(APIClient client, int amount = 10000)
         {
             var request = new CardPaymentRequest
                           {
-                              Amount = 10000,
+                              Amount = amount,
                               OrderId = "TEST" + TimedId,
                               IsMine = true
                           };

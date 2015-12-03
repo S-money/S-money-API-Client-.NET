@@ -11,7 +11,7 @@ using NLog;
 
 namespace Smoney.API.Client
 {
-    public partial class APIClient : HttpClient
+    public partial class APIClient : HttpClient, ISmoneyApiClient
     {
         private readonly int allocationSize;
         private const string page = "?page=";
@@ -69,7 +69,7 @@ namespace Smoney.API.Client
                 && request.Content.Headers.ContentType.MediaType != "multipart/form-data"
                 && request.Content.Headers.ContentType.MediaType != "application/vnd.s-money.v2+json")
             {
-                request.Content.Headers.ContentType.MediaType = MediaTypeVersion;
+                request.Content.Headers.ContentType.MediaType = DefaultRequestHeaders.Accept.ToString();
             }
             var response = base.SendAsync(request, cancellationToken);
 

@@ -114,5 +114,6 @@ namespace Smoney.API.Client.Tests
             Assert.AreEqual(PaymentStatus.Pending, response.Status);
             return response;
         }
+
     }
 }
