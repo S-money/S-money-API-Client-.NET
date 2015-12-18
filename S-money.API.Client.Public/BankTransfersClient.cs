@@ -63,6 +63,12 @@ namespace Smoney.API.Client
             return PostAsync<MandateRequest, MandateResponse>(uri, mandate);
         }
 
+        public MoneyInDirectDebitResponse GetDirectDebit(string orderId, string userId = null)
+        {
+            var uri = CreateUri(userId, directdebits);
+            return GetAsync<MoneyInDirectDebitResponse>(uri + orderId);
+        }
+
         public MoneyInDirectDebitResponse GetDirectDebit(long id, string userId = null)
         {
             var uri = CreateUri(userId, directdebits);

@@ -96,6 +96,19 @@ namespace Smoney.API.Client.Tests
             }
         }
 
+        [Test]
+        public void GetDirectDebitWithOrderId()
+        {
+            using (var client = CreateClient())
+            {
+                var debit = CreateDirectDebit(client);
+                MoneyInDirectDebitResponse result = client.GetDirectDebit(debit.OrderId, UserId);
+                Assert.IsNotNull(result);
+                Assert.AreEqual(debit.Id, result.Id);
+            }
+            
+        }
+
         private MoneyInDirectDebitResponse CreateDirectDebit(APIClient client)
         {
             var mandate = CreateMandate(client);
@@ -114,6 +127,5 @@ namespace Smoney.API.Client.Tests
             Assert.AreEqual(PaymentStatus.Pending, response.Status);
             return response;
         }
-
     }
 }

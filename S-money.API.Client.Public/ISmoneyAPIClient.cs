@@ -55,6 +55,7 @@ namespace Smoney.API.Client
         MandateResponse GetMandate(long id, string userId = null);
         IEnumerable<MandateResponse> GetMandates(string userId = null);
         MandateResponse PostMandate(MandateRequest mandate, string userId = null);
+        MoneyInDirectDebitResponse GetDirectDebit(string orderId, string userId = null);
         MoneyInDirectDebitResponse GetDirectDebit(long id, string userId = null);
         IEnumerable<MoneyInDirectDebitResponse> GetDirectDebits(string userId = null);
         MoneyInDirectDebitResponse PostDirectDebit(MoneyInDirectDebitRequest directdebit, string userId = null);
