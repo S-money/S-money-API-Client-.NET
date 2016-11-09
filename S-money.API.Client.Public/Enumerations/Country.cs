@@ -120,7 +120,7 @@ namespace Smoney.API.Client.Enumerations
         Canada = 36,
 
         [EnumMember(Value = "KR")]
-        CoreeDuSud = 37,
+        CoréeDuSud = 37,
 
         [EnumMember(Value = "US")]
         EtatsUnis = 38,
