@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using Smoney.API.Client.Enumerations;
+using Smoney.API.Client.Models.Attachments;
 using Smoney.API.Client.Models.Operations;
 
 namespace Smoney.API.Client
@@ -61,6 +64,22 @@ namespace Smoney.API.Client
         {
             var uri = CreateUri(userId, mandates);
             return PostAsync<MandateRequest, MandateResponse>(uri, mandate);
+        }
+
+        public bool PostMandateDocument(FileAttachment file, int mandateId, string userId = null)
+        {
+            var uri = userId == null
+                ? string.Format("{0}mandates/{1}/attachments", BaseURL, mandateId)
+                : string.Format("{0}users/{1}/mandates/{2}/attachments", BaseURL, userId, mandateId);
+            var multipart = new MultipartFormDataContent();
+
+            file.Content.Position = 0;
+            var streamContent = new StreamContent(file.Content);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue(file.Type);
+            multipart.Add(streamContent, file.Name, file.Name);
+
+            var response = base.PostAsync(uri, multipart).Result;
+            return response.IsSuccessStatusCode;
         }
 
         public MoneyInDirectDebitResponse GetDirectDebit(string orderId, string userId = null)
