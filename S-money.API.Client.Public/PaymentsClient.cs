@@ -36,7 +36,7 @@ namespace Smoney.API.Client
         public Payment PostPayment(Payment payment, string userId = null)
         {
             var uri = CreateUri(userId, payments);
-            return PostAsync(uri, payment);
+            return PostAsyncWithRetry(uri, payment);
         }
     }
 }
