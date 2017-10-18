@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Smoney.API.Client.Enumerations;
 
 namespace Smoney.API.Client.Models.Users
@@ -10,6 +8,7 @@ namespace Smoney.API.Client.Models.Users
     {
         public long Id { get; set; }
         public string AppUserId { get; set; }
+        public ClientType? Type { get; set; }
         public ClientRole? Role { get; set; }
         public UserProfile Profile { get; set; }
         public decimal Amount { get; set; }
@@ -17,6 +16,7 @@ namespace Smoney.API.Client.Models.Users
         public List<BankAccountRef> BankAccounts { get; set; }
         public List<CardRef> CBCards { get; set; }
         public UserStatus? Status { get; set; }
+        public Company Company { get; set; }
 
         public Account DefaultAccount
         {
