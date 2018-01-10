@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Net.Http;
+using System.Threading.Tasks;
 using Smoney.API.Client.Models.Users;
 
 namespace Smoney.API.Client
@@ -8,28 +8,28 @@ namespace Smoney.API.Client
     {
         private const string bankaccounts = "bankaccounts";
 
-        public BankAccount GetBankAccount(long id, string userId = null)
+        public async Task<BankAccount> GetBankAccount(long id, string userId = null)
         {
             var uri = CreateUri(userId, bankaccounts);
-            return GetAsync<BankAccount>(uri + id);
+            return await GetAsync<BankAccount>(uri + id);
         }
 
-        public List<BankAccount> GetBankAccounts(string userId = null)
+        public async Task<List<BankAccount>> GetBankAccounts(string userId = null)
         {
             var uri = CreateUri(userId, bankaccounts);
-            return GetAsync<List<BankAccount>>(uri);
+            return await GetAsync<List<BankAccount>>(uri);
         }
 
-        public BankAccount PostBankAccount(BankAccount bankAccount, string userId = null)
+        public async Task<BankAccount> PostBankAccount(BankAccount bankAccount, string userId = null)
         {
             var uri = CreateUri(userId, bankaccounts);
-            return PostAsync(uri, bankAccount);
+            return await PostAsync(uri, bankAccount);
         }
 
-        public BankAccount PutBankAccount(BankAccount bankAccount, string userId = null)
+        public async Task<BankAccount> PutBankAccount(BankAccount bankAccount, string userId = null)
         {
             var uri = CreateUri(userId, bankaccounts);
-            return PostAsync(uri, bankAccount);
+            return await PostAsync(uri, bankAccount);
         }
 
         public void DeleteBankAccount(long id, string userId = null)

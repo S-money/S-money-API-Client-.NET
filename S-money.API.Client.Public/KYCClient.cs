@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Smoney.API.Client.Models.Attachments;
 using Smoney.API.Client.Models.Users;
 
@@ -10,19 +11,19 @@ namespace Smoney.API.Client
     {
         private const string kyc = "kyc";
 
-        public KYCDemand GetKYC(long id, string userId = null)
+        public async Task<KYCDemand> GetKYC(long id, string userId = null)
         {
             var uri = CreateUri(userId, kyc);
-            return GetAsync<KYCDemand>(uri + id);
+            return await GetAsync<KYCDemand>(uri + id);
         }
 
-        public IEnumerable<KYCDemand> GetKYCs(string userId = null)
+        public async Task<IEnumerable<KYCDemand>> GetKYCs(string userId = null)
         {
             var uri = CreateUri(userId, kyc);
-            return GetAsync<IEnumerable<KYCDemand>>(uri);
+            return await GetAsync<IEnumerable<KYCDemand>>(uri);
         }
 
-        public KYCDemand PostKYC(List<FileAttachment> files, string userId = null)
+        public async Task<KYCDemand> PostKYC(List<FileAttachment> files, string userId = null)
         {
             var uri = userId == null ? BaseURL + "kyc" : string.Format(BaseURL + "users/{0}/kyc", userId);
 
@@ -38,7 +39,7 @@ namespace Smoney.API.Client
             }
 
             var response = base.PostAsync(uri, multipart).Result;
-            return HandleResult<KYCDemand>(response);
+            return await HandleResult<KYCDemand>(response);
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Smoney.API.Client.Models.Operations;
@@ -16,17 +13,17 @@ namespace Smoney.API.Client.Tests
         public const int AMOUNT = 500;
 
         [TestFixtureSetUp]
-        public void CheckUserAccount()
+        public async Task CheckUserAccount()
         {
             using (var client = CreateClient())
             {
-                var user = client.GetUser(CHARGED_USER_ID);
+                var user = await client.GetUser(CHARGED_USER_ID);
                 Assert.AreEqual(200000, user.DefaultAccount.Amount);
             }
         }
 
         [Test]
-        public void MoveBetweenAccount()
+        public async Task MoveBetweenAccount()
         {
             using (var client = CreateClient())
             {
@@ -40,38 +37,40 @@ namespace Smoney.API.Client.Tests
                                   Beneficiary = accountRef,
                                   Message = "Test -" + TimedId
                               };
-                var result = client.PostPayment(payment, CHARGED_USER_ID);
+                var result = await client.PostPayment(payment, CHARGED_USER_ID);
                 Assert.IsNotNull(result);
                 Assert.AreEqual(CHARGED_USER_ID, result.Sender.AppAccountId);
 
                 accountRef.AppAccountId = CHARGED_USER_ID;
 
-                result = client.PostPayment(payment, UserId);
+                result = await client.PostPayment(payment, UserId);
                 Assert.IsNotNull(result);
                 Assert.AreEqual(UserId, result.Sender.AppAccountId);
             }
         }
 
         [Test]
-        public void GetAllTransfert()
+        public async Task GetAllTransfert()
         {
             using (var client = CreateClient())
             {
-                var transfert = client.GetPayments(CHARGED_USER_ID).ToList();
-                Assert.Greater(transfert.Count(), 1);
-                transfert.ForEach(t => Assert.AreEqual(AMOUNT, t.Amount));
+                var transfert = await client.GetPayments(CHARGED_USER_ID);
+                var list = transfert.ToList();
+                Assert.Greater(list.Count(), 1);
+                list.ForEach(t => Assert.AreEqual(AMOUNT, t.Amount));
             }
         }
 
         [Test]
-        public void ReadOnePayment()
+        public async Task ReadOnePayment()
         {
             using (var client = CreateClient())
             {
-                var transfert = client.GetPayments(CHARGED_USER_ID).Last();
-
+                var transfertsEnumerable = await client.GetPayments(CHARGED_USER_ID);
+                var transfert = transfertsEnumerable.Last();
                 Assert.IsNotNull(transfert);
-                var retrieved = client.GetPayment(transfert.Id, CHARGED_USER_ID);
+
+                var retrieved = await client.GetPayment(transfert.Id, CHARGED_USER_ID);
                 Assert.IsNotNull(retrieved);
                 Assert.AreEqual(transfert.Id, retrieved.Id);
                 Assert.AreEqual(transfert.Amount, retrieved.Amount);

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Net.Http;
+using System.Threading.Tasks;
 using Smoney.API.Client.Models.Operations;
 
 namespace Smoney.API.Client
@@ -8,22 +8,22 @@ namespace Smoney.API.Client
     {
         private const string storedcardpayments = "payins/storedcardpayments";
 
-        public StoredCardPayment PostStoredCardPayment(StoredCardPayment moneyIn, string userId = null)
+        public async Task<StoredCardPayment> PostStoredCardPayment(StoredCardPayment moneyIn, string userId = null)
         {
             var uri = CreateUri(userId, storedcardpayments);
-            return PostAsync(uri, moneyIn);
+            return await PostAsync(uri, moneyIn);
         }
 
-        public IEnumerable<StoredCardPayment> GetStoredCardPayments(string userId = null)
+        public async Task<IEnumerable<StoredCardPayment>> GetStoredCardPayments(string userId = null)
         {
             var uri = CreateUri(userId, storedcardpayments);
-            return GetAsync<IEnumerable<StoredCardPayment>>(uri);
+            return await GetAsync<IEnumerable<StoredCardPayment>>(uri);
         }
 
-        public StoredCardPayment GetStoredCardPayment(string orderId, string userId = null)
+        public async Task<StoredCardPayment> GetStoredCardPayment(string orderId, string userId = null)
         {
             var uri = CreateUri(userId, storedcardpayments);
-            return GetAsync<StoredCardPayment>(uri + orderId);
+            return await GetAsync<StoredCardPayment>(uri + orderId);
         }
     }
 }

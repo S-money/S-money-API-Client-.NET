@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using Smoney.API.Client.Models.Users;
 using Smoney.API.Client.Enumerations;
@@ -12,57 +12,59 @@ namespace Smoney.API.Client.Tests
     internal class UserTests : CommonTests
     {
         [Test]
-        public void RetrieveAllUsers()
+        public async Task RetrieveAllUsers()
         {
             using (var client = CreateClient())
             {
-                var count = client.GetUsersCount();
-                var users = client.GetAllUsers();
+                var count = await client.GetUsersCount();
+                var users = await client.GetAllUsers();
                 Assert.AreEqual(count, users.Count);
             }
         }
 
         [Test]
-        public void RetrieveUserNumber()
+        public async Task RetrieveUserNumber()
         {
             using (var client = CreateClient())
             {
-                var count = client.GetUsersCount();
+                var count = await client.GetUsersCount();
                 Assert.GreaterOrEqual(count, 1);
             }
         }
 
         [Test]
-        public void GetUserPages()
+        public async Task GetUserPages()
         {
             using (var client = CreateClient())
             {
-                var count = client.GetUsersCount();
+                var count = await client.GetUsersCount();
                 Assert.GreaterOrEqual(count, client.DefaultPageSize);
 
                 var expected = count % client.DefaultPageSize;
                 var pageNumber = 1 + count / client.DefaultPageSize;
 
-                var firstPage = client.GetUsers().ToList();
-                Assert.IsNotNull(firstPage);
-                Assert.AreEqual(client.DefaultPageSize, firstPage.Count);
+                var firstPage = await client.GetUsers();
+                var usersList = firstPage.ToList();
+                Assert.IsNotNull(usersList);
+                Assert.AreEqual(client.DefaultPageSize, usersList.Count);
 
-                var secondPage = client.GetUsers(pageNumber).ToList();
-                Assert.IsNotNull(secondPage);
-                Assert.AreEqual(expected, secondPage.Count);
+                var secondPage = await client.GetUsers(pageNumber);
+                var pageList = secondPage.ToList();
+                Assert.IsNotNull(pageList);
+                Assert.AreEqual(expected, pageList.Count);
 
                 var comparer = new UserComparer();
-                var result = firstPage.Union(secondPage, comparer);
+                var result = usersList.Union(pageList, comparer);
                 Assert.AreEqual(client.DefaultPageSize + expected, result.Count());
             }
         }
 
         [Test]
-        public void CreateUser()
+        public async Task CreateUser()
         {
             using (var client = CreateClient())
             {
-                var count = client.GetUsersCount();
+                var count = await client.GetUsersCount();
                 UserProfile profile = new UserProfile
                                       {
                                           FirstName = "TEST",
@@ -71,10 +73,10 @@ namespace Smoney.API.Client.Tests
                                           Address = new Address { Country = Country.France }
                                       };
                 User user = new User { AppUserId = GenerateId(), Profile = profile };
-                var result = client.PostUser(user);
+                var result = await client.PostUser(user);
                 Assert.Greater(result.Id, 0);
 
-                var newNumber = client.GetUsersCount();
+                var newNumber = await client.GetUsersCount();
                 Assert.AreEqual(count + 1, newNumber);
             }
         }
