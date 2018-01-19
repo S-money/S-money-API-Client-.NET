@@ -1,6 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Net.Http;
+using System.Threading;
+using Newtonsoft.Json;
 using Smoney.API.Client.Models.Operations;
-using System.Threading.Tasks;
+using System.Net;
 
 namespace Smoney.API.Client
 {
@@ -8,36 +15,36 @@ namespace Smoney.API.Client
     {
         private const string cardpayments = "payins/cardpayments";
 
-        public async Task<IEnumerable<CardPayment>> GetCardPayments(string userIdentifier = null, int? pageNumber = null)
+        public IEnumerable<CardPayment> GetCardPayments(string userIdentifier = null, int? pageNumber = null)
         {
             UseV2();
 
             var uri = CreateUri(userIdentifier, cardpayments, pageNumber);
-            return await GetAsync<IEnumerable<CardPayment>>(uri);
+            return GetAsync<IEnumerable<CardPayment>>(uri);
         }
 
-        public async Task<int> GetCardPaymentsCount(string userIdentifier = null)
+        public int GetCardPaymentsCount(string userIdentifier = null)
         {
             UseV2();
 
             var uri = CreateUri(userIdentifier, cardpayments);
-            return await GetCount(uri);
+            return GetCount(uri);
         }
 
-        public async Task<CardPayment> GetCardPayment(string id, string userIdentifier = null)
+        public CardPayment GetCardPayment(string id, string userIdentifier = null)
         {
             UseV2();
 
             var uri = CreateUri(userIdentifier, cardpayments);
-            return await GetAsync<CardPayment>(uri + id);
+            return GetAsync<CardPayment>(uri + id);
         }
 
-        public async Task<CardPaymentCreated> PostCardPayment(CardPaymentRequest cardPayment, string userIdentifier = null)
+        public CardPaymentCreated PostCardPayment(CardPaymentRequest cardPayment, string userIdentifier = null)
         {
             UseV2();
 
             var uri = CreateUri(userIdentifier, cardpayments);
-            return await PostAsync<CardPaymentRequest, CardPaymentCreated>(uri, cardPayment);
+            return PostAsync<CardPaymentRequest, CardPaymentCreated>(uri, cardPayment);
         }
     }
 }

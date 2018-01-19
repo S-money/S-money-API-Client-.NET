@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Net.Http;
-using System.Threading.Tasks;
+using System.Configuration;
+using System.Web.Http;
+using Smoney.API.Client.Models;
 using Smoney.API.Client.Models.Users;
 
 namespace Smoney.API.Client
@@ -11,41 +15,41 @@ namespace Smoney.API.Client
         private const string cards = "cards";
         private const string cardsRegistration = "cards/registrations";
 
-        public async Task<Card> GetCard(string appcardid, string userId = null)
+        public Card GetCard(string appcardid, string userId = null)
         {
             var uri = CreateUri(userId, cards);
-            return await GetAsync<Card>(uri + appcardid);
+            return GetAsync<Card>(uri + appcardid);
         }
 
         [Obsolete("Use GetCardRegistration")]
         public CardRegistration GetRegistration(string appcardid, string userId = null)
         {
             var uri = CreateUri(userId, cardsRegistration);
-            return GetAsync<CardRegistration>(uri + appcardid).Result;
+            return GetAsync<CardRegistration>(uri + appcardid);
         }
 
-        public async Task<IEnumerable<Card>> GetCards(string userId = null)
+        public IEnumerable<Card> GetCards(string userId = null)
         {
             var uri = CreateUri(userId, cards);
-            return await GetAsync<IEnumerable<Card>>(uri);
+            return GetAsync<IEnumerable<Card>>(uri);
         }
 
-        public async Task<CardRegistration> GetCardRegistration(string appcardid, string userId = null)
+        public CardRegistration GetCardRegistration(string appcardid, string userId = null)
         {
             var uri = CreateUri(userId, cardsRegistration);
-            return await GetAsync<CardRegistration>(uri + appcardid);
+            return GetAsync<CardRegistration>(uri + appcardid);
         }
 
-        public async Task<IEnumerable<CardRegistration>> GetCardsRegistration(string userId = null)
+        public IEnumerable<CardRegistration> GetCardsRegistration(string userId = null)
         {
             var uri = CreateUri(userId, cardsRegistration);
-            return await GetAsync<IEnumerable<CardRegistration>>(uri);
+            return GetAsync<IEnumerable<CardRegistration>>(uri);
         }
 
-        public async Task<CardRegistration> PostCard(CardRegistration cardRegistration, string userId = null)
+        public CardRegistration PostCard(CardRegistration cardRegistration, string userId = null)
         {
             var uri = CreateUri(userId, "");
-            return await PostAsync(uri, cardRegistration);
+            return PostAsync(uri, cardRegistration);
         }
 
         public HttpResponseMessage DeleteCard(string appcardid, string userId = null)

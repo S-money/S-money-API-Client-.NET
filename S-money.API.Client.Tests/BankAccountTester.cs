@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
 using Smoney.API.Client.Models.Users;
 
 namespace Smoney.API.Client.Tests
@@ -9,9 +9,9 @@ namespace Smoney.API.Client.Tests
         private const string BIC = "CMCIFR2A";
         private const string IBAN = "FR7613106005002000743520962";
 
-        public static async Task<BankAccountRef> CreateAccount(APIClient client, string userId)
+        public static BankAccountRef CreateAccount(APIClient client, string userId)
         {
-            var accounts = await client.GetBankAccounts(userId);
+            var accounts = client.GetBankAccounts(userId);
             var result = accounts.FirstOrDefault(e => e.Iban == IBAN);
             if (result == null)
             {
@@ -22,7 +22,7 @@ namespace Smoney.API.Client.Tests
                                   DisplayName = "Smoney default account",
                                   IsMine = true
                               };
-                result = await client.PostBankAccount(account, userId);
+                result = client.PostBankAccount(account, userId);
             }
             return new BankAccountRef
                    {

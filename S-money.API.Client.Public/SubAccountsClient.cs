@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
-using System.Threading.Tasks;
 using Smoney.API.Client.Models.Users;
 
 namespace Smoney.API.Client
@@ -9,56 +8,56 @@ namespace Smoney.API.Client
     {
         private const string subaccounts = "subaccounts";
 
-        public async Task<Account> GetSubAccount(string identifier, string userid = null)
+        public Account GetSubAccount(string identifier, string userid = null)
         {
             var uri = CreateUri(userid, subaccounts);
-            return await GetAsync<Account>(uri + identifier);
+            return GetAsync<Account>(uri + identifier);
         }
 
-        public async Task<Account> GetSubAccount(long id, string userid = null)
+        public Account GetSubAccount(long id, string userid = null)
         {
-            return await GetSubAccount(id.ToString(), userid);
+            return GetSubAccount(id.ToString(), userid);
         }
 
-        public async Task<IEnumerable<Account>> GetSubAccounts(string userid = null)
-        {
-            var uri = CreateUri(userid, subaccounts);
-            return await GetAsync<IEnumerable<Account>>(uri);
-        }
-
-        public async Task<Account> PostSubAccount(Account subaccount, string userid = null)
+        public IEnumerable<Account> GetSubAccounts(string userid = null)
         {
             var uri = CreateUri(userid, subaccounts);
-            return await PostAsync(uri, subaccount);
+            return GetAsync<IEnumerable<Account>>(uri);
         }
 
-        public async Task<Account> PutSubAccount(string identifier, Account subaccount, string userid = null)
+        public Account PostSubAccount(Account subaccount, string userid = null)
+        {
+            var uri = CreateUri(userid, subaccounts);
+            return PostAsync(uri, subaccount);
+        }
+
+        public Account PutSubAccount(string identifier, Account subaccount, string userid = null)
         {
             var uri = CreateUri(userid, subaccounts);
 
             var response = this.PutAsJsonAsync(uri + identifier, subaccount).Result;
-            return await HandleResult<Account>(response);
+            return HandleResult<Account>(response);
         }
 
-        public async Task<Account> PutSubAccount(long id, Account subaccount, string userid = null)
+        public Account PutSubAccount(long id, Account subaccount, string userid = null)
         {
-            return await PutSubAccount(id.ToString(), subaccount, userid);
+            return PutSubAccount(id.ToString(), subaccount, userid);
         }
 
-        public async Task DeleteSubAccount(string identifier, string userid = null)
+        public void DeleteSubAccount(string identifier, string userid = null)
         {
             var uri = CreateUri(userid, subaccounts);
 
-            var response = await this.DeleteAsync(uri + identifier);
+            var response = this.DeleteAsync(uri + identifier).Result;
             if (!response.IsSuccessStatusCode)
             {
                 throw new APIException(response);
             }
         }
 
-        public async Task DeleteSubAccount(long id, string userid = null)
+        public void DeleteSubAccount(long id, string userid = null)
         {
-            await DeleteSubAccount(id.ToString(), userid);
+            DeleteSubAccount(id.ToString(), userid);
         }
     }
 }

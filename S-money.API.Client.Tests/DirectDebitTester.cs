@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using Smoney.API.Client.Enumerations;
 using Smoney.API.Client.Models.Operations;
@@ -10,32 +9,31 @@ namespace Smoney.API.Client.Tests
     public class DirectDebitTester : CommonTests
     {
         [Test]
-        public async Task GetMandate()
+        public void GetMandate()
         {
             using (var client = CreateClient())
             {
-                var response = await CreateMandate(client);
-                var result = await client.GetMandate(response.Id, UserId);
+                var response = CreateMandate(client);
+                var result = client.GetMandate(response.Id, UserId);
                 Assert.IsNotNull(result);
 
-                var all = await client.GetMandates(UserId);
-                var list = all.ToList();
+                var all = client.GetMandates(UserId).ToList();
                 Assert.IsNotNull(all);
-                Assert.Greater(list.Count, 0);
-                Assert.IsTrue(list.Any(e => e.Id == result.Id));
+                Assert.Greater(all.Count, 0);
+                Assert.IsTrue(all.Any(e => e.Id == result.Id));
             }
         }
 
-        private async Task<MandateResponse> CreateMandate(APIClient client)
+        private MandateResponse CreateMandate(APIClient client)
         {
-            var reference = await BankAccountTester.CreateAccount(client, UserId);
+            var reference = BankAccountTester.CreateAccount(client, UserId);
             var mandate = new MandateRequest
                           {
                               BankAccount = reference,
                               UrlReturn = "http://example.com/dummy/Mandate"
                           };
 
-            var result = await client.PostMandate(mandate, UserId);
+            var result = client.PostMandate(mandate, UserId);
             Assert.IsNotNull(result);
             Assert.Greater(result.Id, 0);
             Assert.AreEqual(reference.Id, result.BankAccount.Id);
@@ -43,44 +41,42 @@ namespace Smoney.API.Client.Tests
         }
 
         [Test]
-        public async Task RequestDirectDebit()
+        public void RequestDirectDebit()
         {
             using (var client = CreateClient())
             {
-                var debit = await CreateDirectDebit(client);
+                var debit = CreateDirectDebit(client);
 
-                var retrieved = await client.GetDirectDebit(debit.Id, UserId);
+                var retrieved = client.GetDirectDebit(debit.Id, UserId);
                 Assert.IsNotNull(retrieved);
 
-                var all = await client.GetDirectDebits(UserId);
-                var list = all.ToList();
-                Assert.IsNotNull(list);
-                Assert.Greater(list.Count, 0);
-                Assert.IsTrue(list.Any(e => e.Id == retrieved.Id));
+                var all = client.GetDirectDebits(UserId).ToList();
+                Assert.IsNotNull(all);
+                Assert.Greater(all.Count, 0);
+                Assert.IsTrue(all.Any(e => e.Id == retrieved.Id));
             }
         }
 
         [Test]
-        public async Task GetAllDirectDebits()
+        public void GetAllDirectDebits()
         {
             using (var client = CreateClient())
             {
-                var requests = await client.GetDirectDebits();
-                var list = requests.ToList();
-                Assert.IsNotNull(list);
-                Assert.Greater(list.Count, 1);
+                var requests = client.GetDirectDebits().ToList();
+                Assert.IsNotNull(requests);
+                Assert.Greater(requests.Count, 1);
             }
         }
 
         [Test]
-        public async Task UpdateDirectDebit()
+        public void UpdateDirectDebit()
         {
             using (var client = CreateClient())
             {
-                var debit = await CreateDirectDebit(client);
+                var debit = CreateDirectDebit(client);
                 const int newAmount = 2 * PaymentClientTest.AMOUNT;
                 var update = new MoneyInDirectDebitRequest { Amount = newAmount };
-                var updated = await client.UpdateDirectDebit(debit.Id, update, UserId);
+                var updated = client.UpdateDirectDebit(debit.Id, update, UserId);
                 Assert.IsNotNull(updated);
                 Assert.AreEqual(debit.Id, updated.Id);
                 Assert.AreEqual(newAmount, updated.Amount);
@@ -88,12 +84,12 @@ namespace Smoney.API.Client.Tests
         }
 
         [Test]
-        public async Task RemoveDirectDebit()
+        public void RemoveDirectDebit()
         {
             using (var client = CreateClient())
             {
-                var debit = await CreateDirectDebit(client);
-                MoneyInDirectDebitResponse result = await client.DeleteDirectDebit(debit.Id, UserId);
+                var debit = CreateDirectDebit(client);
+                MoneyInDirectDebitResponse result = client.DeleteDirectDebit(debit.Id, UserId);
                 Assert.IsNotNull(result);
                 Assert.AreEqual(debit.Id, result.Id);
                 Assert.AreEqual(PaymentStatus.Canceled, result.Status);
@@ -101,21 +97,21 @@ namespace Smoney.API.Client.Tests
         }
 
         [Test]
-        public async Task GetDirectDebitWithOrderId()
+        public void GetDirectDebitWithOrderId()
         {
             using (var client = CreateClient())
             {
-                var debit = await CreateDirectDebit(client);
-                MoneyInDirectDebitResponse result = await client.GetDirectDebit(debit.OrderId, UserId);
+                var debit = CreateDirectDebit(client);
+                MoneyInDirectDebitResponse result = client.GetDirectDebit(debit.OrderId, UserId);
                 Assert.IsNotNull(result);
                 Assert.AreEqual(debit.Id, result.Id);
             }
             
         }
 
-        private async Task<MoneyInDirectDebitResponse> CreateDirectDebit(APIClient client)
+        private MoneyInDirectDebitResponse CreateDirectDebit(APIClient client)
         {
-            var mandate = await CreateMandate(client);
+            var mandate = CreateMandate(client);
             var directdebit = new MoneyInDirectDebitRequest
                               {
                                   Mandate = new MandateRef { Id = mandate.Id },
@@ -125,7 +121,7 @@ namespace Smoney.API.Client.Tests
                                   IsMine = true,
                                   Message = "Test RequestDirectDebit"
                               };
-            var response = await client.PostDirectDebit(directdebit, UserId);
+            var response = client.PostDirectDebit(directdebit, UserId);
 
             Assert.IsNotNull(response);
             Assert.AreEqual(PaymentStatus.Pending, response.Status);

@@ -1,5 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Net.Http;
+using System.Configuration;
+using System.Web.Http;
+using Smoney.API.Client.Models;
 using Smoney.API.Client.Models.Operations;
 
 namespace Smoney.API.Client
@@ -8,16 +14,16 @@ namespace Smoney.API.Client
     {
         private const string payments = "payments";
 
-        public async Task<Payment> GetPayment(long id, string userId = null)
+        public Payment GetPayment(long id, string userId = null)
         {
             var uri = CreateUri(userId, payments);
-            return await GetAsync<Payment>(uri + id);
+            return GetAsync<Payment>(uri + id);
         }
 
-        public async Task<IEnumerable<Payment>> GetPayments(string userId = null)
+        public IEnumerable<Payment> GetPayments(string userId = null)
         {
             var uri = CreateUri(userId, payments);
-            return await GetAsync<IEnumerable<Payment>>(uri);
+            return GetAsync<IEnumerable<Payment>>(uri);
         }
 
         // Not implemented
@@ -27,10 +33,10 @@ namespace Smoney.API.Client
         //    return GetCount(uri);
         //}
 
-        public async Task<Payment> PostPayment(Payment payment, string userId = null)
+        public Payment PostPayment(Payment payment, string userId = null)
         {
             var uri = CreateUri(userId, payments);
-            return await PostAsync(uri, payment);
+            return PostAsync(uri, payment);
         }
     }
 }

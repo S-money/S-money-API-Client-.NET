@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using Smoney.API.Client.Enumerations;
 using Smoney.API.Client.Models.Attachments;
 using Smoney.API.Client.Models.Operations;
@@ -21,53 +20,53 @@ namespace Smoney.API.Client
 
         #region MoneyOut
 
-        public async Task<MoneyOut> PostRecurringMoneyOut(MoneyOut moneyOut, string userIdentifier = null)
+        public MoneyOut PostRecurringMoneyOut(MoneyOut moneyOut, string userIdentifier = null)
         {
             var uri = CreateUri(userIdentifier, moneyoutsReccuring);
-            return await PostAsync(uri, moneyOut);
+            return PostAsync(uri, moneyOut);
         }
 
-        public async Task<MoneyOut> GetMoneyOut(long id, string userId = null)
+        public MoneyOut GetMoneyOut(long id, string userId = null)
         {
             var uri = CreateUri(userId, moneyouts);
-            return await GetAsync<MoneyOut>(uri + id);
+            return GetAsync<MoneyOut>(uri + id);
         }
 
-        public async Task<IEnumerable<MoneyOut>> GetMoneyOuts(string userId = null)
+        public IEnumerable<MoneyOut> GetMoneyOuts(string userId = null)
         {
             var uri = CreateUri(userId, moneyouts);
-            return await GetAsync<IEnumerable<MoneyOut>>(uri);
+            return GetAsync<IEnumerable<MoneyOut>>(uri);
         }
 
-        public async Task<MoneyOut> PostOneShotMoneyOut(MoneyOut moneyOut, string userId = null)
+        public MoneyOut PostOneShotMoneyOut(MoneyOut moneyOut, string userId = null)
         {
             var uri = CreateUri(userId, moneyoutsOneshot);
-            return await PostAsync(uri, moneyOut);
+            return PostAsync(uri, moneyOut);
         }
 
         #endregion
 
         #region MoneyIn DirectDebits
 
-        public async Task<MandateResponse> GetMandate(long id, string userId = null)
+        public MandateResponse GetMandate(long id, string userId = null)
         {
             var uri = CreateUri(userId, mandates);
-            return await GetAsync<MandateResponse>(uri + id);
+            return GetAsync<MandateResponse>(uri + id);
         }
 
-        public async Task<IEnumerable<MandateResponse>> GetMandates(string userId = null)
+        public IEnumerable<MandateResponse> GetMandates(string userId = null)
         {
             var uri = CreateUri(userId, mandates);
-            return await GetAsync<IEnumerable<MandateResponse>>(uri);
+            return GetAsync<IEnumerable<MandateResponse>>(uri);
         }
 
-        public async Task<MandateResponse> PostMandate(MandateRequest mandate, string userId = null)
+        public MandateResponse PostMandate(MandateRequest mandate, string userId = null)
         {
             var uri = CreateUri(userId, mandates);
-            return await PostAsync<MandateRequest, MandateResponse>(uri, mandate);
+            return PostAsync<MandateRequest, MandateResponse>(uri, mandate);
         }
 
-        public async Task<bool> PostMandateDocument(FileAttachment file, int mandateId, string userId = null)
+        public bool PostMandateDocument(FileAttachment file, int mandateId, string userId = null)
         {
             var uri = userId == null
                 ? string.Format("{0}mandates/{1}/attachments", BaseURL, mandateId)
@@ -79,100 +78,100 @@ namespace Smoney.API.Client
             streamContent.Headers.ContentType = new MediaTypeHeaderValue(file.Type);
             multipart.Add(streamContent, file.Name, file.Name);
 
-            var response = await base.PostAsync(uri, multipart);
+            var response = base.PostAsync(uri, multipart).Result;
             return response.IsSuccessStatusCode;
         }
 
-        public async Task<MoneyInDirectDebitResponse> GetDirectDebit(string orderId, string userId = null)
+        public MoneyInDirectDebitResponse GetDirectDebit(string orderId, string userId = null)
         {
             var uri = CreateUri(userId, directdebits);
-            return await GetAsync<MoneyInDirectDebitResponse>(uri + orderId);
+            return GetAsync<MoneyInDirectDebitResponse>(uri + orderId);
         }
 
-        public async Task<MoneyInDirectDebitResponse> GetDirectDebit(long id, string userId = null)
+        public MoneyInDirectDebitResponse GetDirectDebit(long id, string userId = null)
         {
             var uri = CreateUri(userId, directdebits);
-            return await GetAsync<MoneyInDirectDebitResponse>(uri + id);
+            return GetAsync<MoneyInDirectDebitResponse>(uri + id);
         }
 
-        public async Task<IEnumerable<MoneyInDirectDebitResponse>> GetDirectDebits(string userId = null)
+        public IEnumerable<MoneyInDirectDebitResponse> GetDirectDebits(string userId = null)
         {
             var uri = CreateUri(userId, directdebits);
-            return await GetAsync<IEnumerable<MoneyInDirectDebitResponse>>(uri);
+            return GetAsync<IEnumerable<MoneyInDirectDebitResponse>>(uri);
         }
 
-        public async Task<MoneyInDirectDebitResponse> PostDirectDebit(MoneyInDirectDebitRequest directdebit, string userId = null)
+        public MoneyInDirectDebitResponse PostDirectDebit(MoneyInDirectDebitRequest directdebit, string userId = null)
         {
             var uri = CreateUri(userId, directdebits);
-            return await PostAsync<MoneyInDirectDebitRequest, MoneyInDirectDebitResponse>(uri, directdebit);
+            return PostAsync<MoneyInDirectDebitRequest, MoneyInDirectDebitResponse>(uri, directdebit);
         }
 
-        public async Task<MoneyInDirectDebitResponse> UpdateDirectDebit(long id, MoneyInDirectDebitRequest update, string userId = null)
+        public MoneyInDirectDebitResponse UpdateDirectDebit(long id, MoneyInDirectDebitRequest update, string userId = null)
         {
             var uri = CreateUri(userId, directdebits);
-            return await PutAsync<MoneyInDirectDebitRequest, MoneyInDirectDebitResponse>(uri + id, update);
+            return PutAsync<MoneyInDirectDebitRequest, MoneyInDirectDebitResponse>(uri + id, update);
         }
 
-        public async Task<MoneyInDirectDebitResponse> DeleteDirectDebit(long id, string userId = null)
+        public MoneyInDirectDebitResponse DeleteDirectDebit(long id, string userId = null)
         {
             var uri = CreateUri(userId, directdebits);
             var update = new CancelRequest { Status = PaymentStatus.Canceled };
-            return await PutAsync<CancelRequest, MoneyInDirectDebitResponse>(uri + id, update);
+            return PutAsync<CancelRequest, MoneyInDirectDebitResponse>(uri + id, update);
         }
 
         #endregion
 
         #region MoneyIn Bank transfer
 
-        public async Task<BankTransferReferenceResponse> PostBankTransferReference(string userId)
+        public BankTransferReferenceResponse PostBankTransferReference(string userId)
         {
             var request = new BankTransferReferenceRequest { IsMine = true };
-            return await PostBankTransferReference(request, userId);
+            return PostBankTransferReference(request, userId);
         }
 
-        public async Task<BankTransferReferenceResponse> PostBankTransferReference(BankTransferReferenceRequest request, string userId)
+        public BankTransferReferenceResponse PostBankTransferReference(BankTransferReferenceRequest request, string userId)
         {
             var uri = CreateUri(userId, banktransferreferences);
-            return await PostAsync<BankTransferReferenceRequest, BankTransferReferenceResponse>(uri, request);
+            return PostAsync<BankTransferReferenceRequest, BankTransferReferenceResponse>(uri, request);
         }
 
 
-        public async Task<BankTransferReferenceResponse> GetBankTransfertReference(string reference, string userId)
+        public BankTransferReferenceResponse GetBankTransfertReference(string reference, string userId)
         {
             var uri = CreateUri(userId, banktransferreferences);
-            return await GetAsync<BankTransferReferenceResponse>(uri + reference);
+            return GetAsync<BankTransferReferenceResponse>(uri + reference);
         }
 
-        public async Task<BankTransferReferenceResponse> GetBankTransfertReference(long referenceId, string userId)
+        public BankTransferReferenceResponse GetBankTransfertReference(long referenceId, string userId)
         {
             var uri = CreateUri(userId, banktransferreferences);
-            return await GetAsync<BankTransferReferenceResponse>(uri + referenceId);
+            return GetAsync<BankTransferReferenceResponse>(uri + referenceId);
         }
 
-        public async Task<IEnumerable<BankTransferReferenceResponse>> GetBankTransfertReferences(string userId)
+        public IEnumerable<BankTransferReferenceResponse> GetBankTransfertReferences(string userId)
         {
             var uri = CreateUri(userId, banktransferreferences);
-            return await GetAsync<IEnumerable<BankTransferReferenceResponse>>(uri);
+            return GetAsync<IEnumerable<BankTransferReferenceResponse>>(uri);
         }
 
-        public async Task<IEnumerable<MoneyInBankTransfer>> GetBankTransfer(string reference, string userId)
+        public IEnumerable<MoneyInBankTransfer> GetBankTransfer(string reference, string userId)
         {
             var uri = CreateUri(userId, banktransfers);
             uri += string.Format("?reference={0}", reference);
-            return await GetAsync<IEnumerable<MoneyInBankTransfer>>(uri);
+            return GetAsync<IEnumerable<MoneyInBankTransfer>>(uri);
         }
 
 
-        public async Task<MoneyInBankTransfer> GetBankTransfer(long id, string userId)
+        public MoneyInBankTransfer GetBankTransfer(long id, string userId)
         {
             var uri = CreateUri(userId, banktransfers);
-            return await GetAsync<MoneyInBankTransfer>(uri + id);
+            return GetAsync<MoneyInBankTransfer>(uri + id);
         }
 
-        public async Task<IEnumerable<MoneyInBankTransfer>> GetBankTransfers(string userId)
+        public IEnumerable<MoneyInBankTransfer> GetBankTransfers(string userId)
         {
             var uri = CreateUri(userId, banktransfers);
-            return await GetAsync<IEnumerable<MoneyInBankTransfer>>(uri);
+            return GetAsync<IEnumerable<MoneyInBankTransfer>>(uri);
         }
 
         #endregion

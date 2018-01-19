@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
 using Smoney.API.Client.Enumerations;
 using Smoney.API.Client.Models.Users;
 
@@ -13,44 +12,44 @@ namespace Smoney.API.Client
     {
         private const string users = "users";
 
-        public async Task<User> GetUser(long id)
+        public User GetUser(long id)
         {
-            return await GetUser(id.ToString());
+            return GetUser(id.ToString());
         }
 
-        public async Task<User> GetUser(string identifier)
+        public User GetUser(string identifier)
         {
             var uri = CreateUri(identifier, string.Empty);
-            return await GetAsync<User>(uri);
+            return GetAsync<User>(uri);
         }
 
-        public async Task<IEnumerable<User>> GetUsers(int? pageNumber = null)
+        public IEnumerable<User> GetUsers(int? pageNumber = null)
         {
             var uri = CreateUri(string.Empty, users, pageNumber);
-            return await GetAsync<IEnumerable<User>>(uri);
+            return GetAsync<IEnumerable<User>>(uri);
         }
 
-        public async Task<int> GetUsersCount()
+        public int GetUsersCount()
         {
             var uri = CreateUri(string.Empty, users);
-            return await GetCount(uri);
+            return GetCount(uri);
         }
 
-        public async Task<List<User>> GetAllUsers()
+        public List<User> GetAllUsers()
         {
             SmoneyLogger.Logger.Warn("");
-            var count = await GetUsersCount();
+            var count = GetUsersCount();
             List<User> results = new List<User>(count);
             int currentPage = 1;
             while (results.Count != count)
             {
-                var items = await GetUsers(currentPage++);
+                var items = GetUsers(currentPage++);
                 results.AddRange(items);
             }
             return results;
         }
 
-        public async Task<IEnumerable<User>> SearchUser(string firstName = null, string lastName = null, string email = null)
+        public IEnumerable<User> SearchUser(string firstName = null, string lastName = null, string email = null)
         {
             string url = BaseURL + "users/search";
             var parameters = new NameValueCollection();
@@ -70,41 +69,41 @@ namespace Smoney.API.Client
             url = url + "?" + string.Join("&", parameters.AllKeys.Select(x => x + "=" + parameters[x]));
 
             var response = this.GetAsync(url).Result;
-            return await HandleResult<IEnumerable<User>>(response);
+            return HandleResult<IEnumerable<User>>(response);
         }
 
-        public async Task<User> PostUser(User user)
+        public User PostUser(User user)
         {
             var uri = CreateUri(string.Empty, users);
-            return await PostAsync(uri, user);
+            return PostAsync(uri, user);
         }
 
-        public async Task<User> PutUser(string identifier, User user)
+        public User PutUser(string identifier, User user)
         {
             var response = this.PutAsJsonAsync(string.Format(BaseURL + "users/{0}", identifier), user).Result;
-            return await HandleResult<User>(response);
+            return HandleResult<User>(response);
         }
 
-        public async Task<User> PutUser(User user)
+        public User PutUser(User user)
         {
             var response = this.PutAsJsonAsync(BaseURL + "users", user).Result;
-            return await HandleResult<User>(response);
+            return HandleResult<User>(response);
         }
 
-        public async Task<User> CloseUser(string identifier)
+        public User CloseUser(string identifier)
         {
             var closeUser = new User { Status = UserStatus.Closed };
 
             var response = this.PutAsJsonAsync(string.Format(BaseURL + "users/{0}", identifier), closeUser).Result;
-            return await HandleResult<User>(response);
+            return HandleResult<User>(response);
         }
 
-        public async Task<User> CloseUser()
+        public User CloseUser()
         {
             var closeUser = new User { Status = UserStatus.Closed };
 
             var response = this.PutAsJsonAsync(BaseURL + "users", closeUser).Result;
-            return await HandleResult<User>(response);
+            return HandleResult<User>(response);
         }
     }
 }

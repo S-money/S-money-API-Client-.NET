@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using NLog;
 
 namespace Smoney.API.Client
 {
@@ -57,7 +58,7 @@ namespace Smoney.API.Client
             AddRequestHeader(name, value);
         }
 
-        public override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+        public override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
                                                             CancellationToken cancellationToken)
         {
             SmoneyLogger.Logger.Debug(string.Format("Calling API {0}", request.RequestUri));
@@ -70,12 +71,13 @@ namespace Smoney.API.Client
             {
                 request.Content.Headers.ContentType.MediaType = DefaultRequestHeaders.Accept.ToString();
             }
-            var response = await base.SendAsync(request, cancellationToken);
+            var response = base.SendAsync(request, cancellationToken);
 
-            if (response != null && response.Content != null && response.Content.Headers.ContentType != null)
+            if (response.Result != null && response.Result.Content != null && response.Result.Content.Headers.ContentType != null)
             {
-                response.Content.Headers.ContentType.MediaType = "application/json";
+                response.Result.Content.Headers.ContentType.MediaType = "application/json";
             }
+
             return response;
         }
 
@@ -94,51 +96,55 @@ namespace Smoney.API.Client
             return response;
         }
 
-        public async Task<T> GetAsync<T>(string uri)
+        public T GetAsync<T>(string uri)
         {
-            var response = await GetAsync(uri);
-            return await HandleResult<T>(response);
+            var response = GetAsync(uri).Result;
+            return HandleResult<T>(response);
         }
 
-        private async Task<T> PostAsync<T>(string uri, T item)
+        private T PostAsync<T>(string uri, T item)
         {
             var response = this.PostAsJsonAsync(uri, item).Result;
-            return await HandleResult<T>(response);
+            return HandleResult<T>(response);
         }
 
-        private async Task<TResponse> PostAsync<TRequest, TResponse>(string uri, TRequest item)
+        private TResponse PostAsync<TRequest, TResponse>(string uri, TRequest item)
         {
             var response = this.PostAsJsonAsync(uri, item).Result;
-            return await HandleResult<TResponse>(response);
-        }
-        
-        private async Task<T> PutAsync<T>(string uri, T item)
-        {
-            var response = this.PutAsJsonAsync(uri, item).Result;
-            return await HandleResult<T>(response);
+            return HandleResult<TResponse>(response);
         }
 
-        private async Task<TResponse> PutAsync<TRequest, TResponse>(string uri, TRequest item)
+
+        private T PutAsync<T>(string uri, T item)
         {
             var response = this.PutAsJsonAsync(uri, item).Result;
-            return await HandleResult<TResponse>(response);
+            return HandleResult<T>(response);
         }
-        
-        private static async Task<T> HandleResult<T>(HttpResponseMessage response)
+
+        private TResponse PutAsync<TRequest, TResponse>(string uri, TRequest item)
+        {
+            var response = this.PutAsJsonAsync(uri, item).Result;
+            return HandleResult<TResponse>(response);
+        }
+
+
+
+
+        private static T HandleResult<T>(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)
             {
                 throw new APIException(response);
             }
 
-            var result = await response.Content.ReadAsAsync<T>();
+            var result = response.Content.ReadAsAsync<T>().Result;
             return result;
         }
 
-        private async Task<int> GetCount(string uri)
+        private int GetCount(string uri)
         {
             uri += "?perpage=1";
-            var response = await GetAsync(uri);
+            var response = GetAsync(uri).Result;
 
             if (!response.IsSuccessStatusCode)
             {
