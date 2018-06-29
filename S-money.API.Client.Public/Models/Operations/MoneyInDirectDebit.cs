@@ -11,19 +11,19 @@ namespace Smoney.API.Client.Models.Operations
         public DateTime? PaymentDate { get; set; }
         public long Amount { get; set; }
         public long? Fee { get; set; }
-        
+
         public AccountRef Beneficiary { get; set; }
         public bool IsMine { get; set; }
 
         public string Message { get; set; }
 
         public MandateRef Mandate { get; set; }
-        
+
     }
 
     public class MoneyInDirectDebitRequest : MoneyInDirectDebit
     {
-        
+
     }
     public class MoneyInDirectDebitResponse : MoneyInDirectDebit
     {
