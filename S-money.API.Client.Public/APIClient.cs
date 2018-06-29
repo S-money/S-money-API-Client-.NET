@@ -7,7 +7,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NLog;
 
 namespace Smoney.API.Client
 {
@@ -94,6 +93,16 @@ namespace Smoney.API.Client
             }
 
             return response;
+        }
+
+        public async Task<byte[]> DownloadAsync(string requestUri)
+        {
+            DefaultRequestHeaders.Remove("Accept");
+            DefaultRequestHeaders.Add("Accept", "application/pdf");
+
+            var request = GetAsync(requestUri);
+            var response = request.Result.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsByteArrayAsync();
         }
 
         public T GetAsync<T>(string uri)
