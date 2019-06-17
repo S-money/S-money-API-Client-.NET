@@ -31,15 +31,15 @@ namespace Smoney.API.Client.Tests
             using (var client = CreateClient())
             {
                 var accountRef = new AccountRef
-                                 {
-                                     AppAccountId = UserId
-                                 };
+                {
+                    AppAccountId = UserId
+                };
                 var payment = new Payment
-                              {
-                                  Amount = AMOUNT,
-                                  Beneficiary = accountRef,
-                                  Message = "Test -" + TimedId
-                              };
+                {
+                    Amount = AMOUNT,
+                    Beneficiary = accountRef,
+                    Message = "Test -" + TimedId
+                };
                 var result = client.PostPayment(payment, CHARGED_USER_ID);
                 Assert.IsNotNull(result);
                 Assert.AreEqual(CHARGED_USER_ID, result.Sender.AppAccountId);
@@ -76,6 +76,17 @@ namespace Smoney.API.Client.Tests
                 Assert.AreEqual(transfert.Id, retrieved.Id);
                 Assert.AreEqual(transfert.Amount, retrieved.Amount);
                 Assert.AreEqual(transfert.Message, retrieved.Message);
+            }
+        }
+
+        [Test]
+        public void GetAllHistoryItems()
+        {
+            using (var client = CreateClient())
+            {
+                var historyItems = client.GetHistoryItems(CHARGED_USER_ID).ToList();
+                Assert.Greater(historyItems.Count(), 1);
+                historyItems.ForEach(t => Assert.Greater(t.Amount, 0));
             }
         }
     }
