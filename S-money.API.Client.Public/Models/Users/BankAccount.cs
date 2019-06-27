@@ -12,5 +12,6 @@ namespace Smoney.API.Client.Models.Users
         public string Bic { get; set; }
         public string Iban { get; set; }
         public bool? IsMine { get; set; }
+        public int Status { get; set; }
     }
 }
