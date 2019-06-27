@@ -64,6 +64,7 @@
     <Compile Include="BankAccountsClient.cs" />
     <Compile Include="CardsClient.cs" />
     <Compile Include="ConsoleLogger.cs" />
+    <Compile Include="Enumerations\ClientType.cs" />
     <Compile Include="Enumerations\PaymentStatus.cs" />
     <Compile Include="Enumerations\Civility.cs" />
     <Compile Include="Enumerations\Country.cs" />
@@ -72,13 +73,17 @@
     <Compile Include="Enumerations\UserStatus.cs" />
     <Compile Include="ILogAdapter.cs" />
     <Compile Include="ISmoneyAPIClient.cs" />
+    <Compile Include="Models\Attachments\Attachment.cs" />
     <Compile Include="Models\Operations\BankTransferReferenceRequest.cs" />
+    <Compile Include="Models\Operations\HistoryItem.cs" />
     <Compile Include="Models\Operations\MoneyInDirectDebit.cs" />
     <Compile Include="Models\Operations\Mandate.cs" />
     <Compile Include="Models\Operations\MandateRef.cs" />
     <Compile Include="Models\Operations\MoneyInBankTransfer.cs" />
     <Compile Include="Models\Operations\PaymentSchedule.cs" />
     <Compile Include="Enumerations\CallbackType.cs" />
+    <Compile Include="Models\Users\ChatMessage.cs" />
+    <Compile Include="Models\Users\Company.cs" />
     <Compile Include="SmoneyLogger.cs" />
     <Compile Include="StoredBankTransfersClient.cs" />
     <Compile Include="Enumerations\ClientRole.cs" />

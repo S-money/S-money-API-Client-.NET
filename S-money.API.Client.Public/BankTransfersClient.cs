@@ -82,6 +82,12 @@ namespace Smoney.API.Client
             return response.IsSuccessStatusCode;
         }
 
+        public byte[] GetMandateDocument(int mandateId, string userId)
+        {
+            var uri = string.Format("{0}/users/{1}/mandates/{2}", BaseAddress, userId, mandateId);
+            return DownloadAsync(uri).Result;
+        }
+
         public MoneyInDirectDebitResponse GetDirectDebit(string orderId, string userId = null)
         {
             var uri = CreateUri(userId, directdebits);

@@ -108,7 +108,7 @@ namespace Smoney.API.Client.Tests
             }
             
         }
-
+        
         private MoneyInDirectDebitResponse CreateDirectDebit(APIClient client)
         {
             var mandate = CreateMandate(client);

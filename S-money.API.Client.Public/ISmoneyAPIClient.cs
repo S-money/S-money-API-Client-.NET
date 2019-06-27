@@ -23,6 +23,7 @@ namespace Smoney.API.Client
         Payment GetPayment(long id, string userId = null);
         IEnumerable<Payment> GetPayments(string userId = null);
         Payment PostPayment(Payment payment, string userId = null);
+        IEnumerable<HistoryItem> GetHistoryItems(string userId = null, DateTime? startDate = null, DateTime? endDate = null, int perPage = 10000, int page = 1);
         User GetUser(long id);
         User GetUser(string identifier);
         IEnumerable<User> GetUsers(int? pageNumber = null);
@@ -56,6 +57,7 @@ namespace Smoney.API.Client
         IEnumerable<MandateResponse> GetMandates(string userId = null);
         MandateResponse PostMandate(MandateRequest mandate, string userId = null);
         bool PostMandateDocument(FileAttachment file, int mandateId, string userId = null);
+        byte[] GetMandateDocument(int mandateId, string userId);
         MoneyInDirectDebitResponse GetDirectDebit(string orderId, string userId = null);
         MoneyInDirectDebitResponse GetDirectDebit(long id, string userId = null);
         IEnumerable<MoneyInDirectDebitResponse> GetDirectDebits(string userId = null);
