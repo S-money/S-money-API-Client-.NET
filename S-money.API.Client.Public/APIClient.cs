@@ -108,6 +108,26 @@ namespace Smoney.API.Client
             return HandleResult<T>(response);
         }
 
+        private T PostAsyncWithRetry<T>(string uri, T item)
+        {
+            var retries = 3;
+            while (true)
+            {
+                try
+                {
+                    return PostAsync<T>(uri, item);
+                }
+                catch (Exception)
+                {
+                    if (--retries == 0)
+                    {
+                        throw;
+                    }
+                    Thread.Sleep(1000);
+                }
+            }
+        }
+
         private TResponse PostAsync<TRequest, TResponse>(string uri, TRequest item)
         {
             var response = this.PostAsJsonAsync(uri, item).Result;

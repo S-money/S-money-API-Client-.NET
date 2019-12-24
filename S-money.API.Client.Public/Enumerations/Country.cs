@@ -114,13 +114,13 @@ namespace Smoney.API.Client.Enumerations
         Australie = 34,
 
         [EnumMember(Value = "BR")]
-        Bresil = 35,
+        Brésil = 35,
 
         [EnumMember(Value = "CA")]
         Canada = 36,
 
         [EnumMember(Value = "KR")]
-        CoreeDuSud = 37,
+        CoréeDuSud = 37,
 
         [EnumMember(Value = "US")]
         EtatsUnis = 38,
